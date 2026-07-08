@@ -1,0 +1,54 @@
+.topButton {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  transition: all cubic-bezier(0.4, 0, 0.2, 1) 150ms;
+  cursor: pointer;
+  color: var(--fg-light);
+
+  &:hover {
+    background-color: var(--active);
+    color: var(--fg-deeper);
+  }
+
+  &[data-hidden="true"] {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @media print {
+    display: none;
+  }
+}
+
+.nav {
+  display: flex;
+  padding: 32px;
+}
+
+.left {
+  flex: 1;
+}
+
+.right {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 1.25rem;
+}
+
+.right > * {
+  color: var(--fg-light);
+  transition: color 0.2s ease;
+}
+
+.right > *:hover {
+  color: var(--fg-deeper);
+}
+
+.right > button {
+  display: flex;
+  align-items: center;
+}

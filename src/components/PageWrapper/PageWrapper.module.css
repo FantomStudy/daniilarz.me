@@ -1,0 +1,39 @@
+.header {
+  margin: auto;
+  margin-bottom: 32px;
+}
+
+p.meta {
+  color: var(--fg-light);
+  margin-top: -24px !important;
+}
+
+p.description {
+  margin-top: -24px !important;
+  font-style: italic;
+}
+
+.article {
+  margin: auto;
+}
+
+.footer {
+  margin: 32px auto;
+  @media print {
+    display: none;
+  }
+}
+
+.chevron {
+  color: var(--fg-light);
+  font-family: var(--font-mono);
+}
+
+.command {
+  color: var(--fg-light);
+  font-family: var(--font-mono);
+
+  &:hover {
+    color: var(--fg-deeper);
+  }
+}
