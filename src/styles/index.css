@@ -26,7 +26,6 @@ html {
   color: var(--fg);
   background-color: var(--bg);
   font-family: var(--font-sans);
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

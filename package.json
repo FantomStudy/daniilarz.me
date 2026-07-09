@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@mdx-js/rollup": "^3.1.1",
+    "@shikijs/rehype": "^4.3.1",
     "@tanstack/react-router": "^1.170.17",
     "@tanstack/react-start": "^1.168.27",
     "clsx": "^2.1.1",
@@ -19,8 +20,12 @@
     "nitro": "^3.0.260610-beta",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "rehype-autolink-headings": "^7.1.0",
+    "rehype-slug": "^6.0.0",
     "remark-frontmatter": "^5.0.0",
+    "remark-gfm": "^4.0.1",
     "remark-mdx-frontmatter": "^5.2.0",
+    "shiki": "^4.3.1",
     "srvx": "^0.11.21",
     "temporal-polyfill": "^1.0.1"
   },

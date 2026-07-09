@@ -57,7 +57,7 @@
   line-height: 1.5;
 }
 
-a.header-anchor {
+.prose a.header-anchor {
   float: left;
   border: 0 !important;
   font-size: 0.85em;
@@ -65,10 +65,11 @@ a.header-anchor {
   margin-left: -1.2em;
   padding-right: 0.5em;
   opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
-:is(h1, h2, h3, h4, h5, h6):hover a.header-anchor,
-:is(h1, h2, h3, h4, h5, h6) a.header-anchor:focus {
+.prose :is(h1, h2, h3, h4, h5, h6):hover a.header-anchor,
+.prose :is(h1, h2, h3, h4, h5, h6) a.header-anchor:focus {
   opacity: 0.6;
 }
 
@@ -121,8 +122,9 @@ a.header-anchor {
   font-size: 1.05em;
 }
 
-.prose s {
-  opacity: 0.5;
+.prose s,
+.prose del {
+  opacity: 0.6;
 }
 
 /* Lists */
