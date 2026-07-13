@@ -2,7 +2,6 @@ import type { Frontmatter } from "@/types";
 import { notFound, lazyRouteComponent } from "@tanstack/react-router";
 
 const meta = import.meta.glob<Frontmatter | undefined>("/content/**/*.mdx", {
-  eager: true,
   import: "frontmatter",
 });
 const components = import.meta.glob<{ default: React.ComponentType }>("/content/**/*.mdx");
@@ -19,11 +18,11 @@ function normalize(slug: string) {
   return `/content/${clean}.mdx`;
 }
 
-export function getMeta(slug: string) {
+export async function getMeta(slug: string) {
   const path = normalize(slug);
-  const frontmatter = meta[path];
-  if (!components[path]) throw notFound();
-  return { frontmatter };
+  const load = meta[path];
+  if (!load) throw notFound();
+  return { frontmatter: await load() };
 }
 
 export function getContent(slug: string) {
