@@ -60,7 +60,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
 
     await transition.ready.then(() => {
       const clipPath = [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`];
-      document.documentElement.animate(
+      const animation = document.documentElement.animate(
         {
           clipPath: resolvedTheme === "dark" ? clipPath : [...clipPath].reverse(),
         },
@@ -74,6 +74,8 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
               : "::view-transition-old(root)",
         },
       );
+
+      transition.finished.then(() => animation.cancel()).catch(() => {});
     });
   }
 
