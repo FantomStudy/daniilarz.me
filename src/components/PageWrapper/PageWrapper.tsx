@@ -25,7 +25,9 @@ export const PageWrapper = ({ children, frontmatter }: PageWrapperProps) => {
             </p>
           )}
 
-          {frontmatter.description && <p className={styles.description}>{frontmatter.description}</p>}
+          {frontmatter.description && (
+            <p className={styles.description}>{frontmatter.description}</p>
+          )}
         </div>
       )}
 

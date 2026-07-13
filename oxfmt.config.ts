@@ -16,4 +16,5 @@ export default defineConfig({
     ],
     newlinesBetween: false,
   },
+  ignorePatterns: ["routeTree.gen.ts"],
 });
