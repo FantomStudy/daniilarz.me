@@ -11,8 +11,8 @@
     "fmt": "oxfmt"
   },
   "dependencies": {
-    "@tanstack/react-router": "^1.170.17",
-    "@tanstack/react-start": "^1.168.27",
+    "@tanstack/react-router": "^1.170.18",
+    "@tanstack/react-start": "^1.168.28",
     "clsx": "^2.1.1",
     "nitro": "^3.0.260610-beta",
     "react": "^19.2.7",
@@ -30,8 +30,8 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
-    "oxfmt": "^0.58.0",
-    "oxlint": "^1.73.0",
+    "oxfmt": "^0.59.0",
+    "oxlint": "^1.74.0",
     "oxlint-tsgolint": "^0.24.0",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-slug": "^6.0.0",
