@@ -192,7 +192,7 @@ export function DotFlowField() {
       }
       ready = true;
 
-      container.appendChild(app.canvas);
+      container?.appendChild(app.canvas);
       app.renderer.resize(window.innerWidth, window.innerHeight);
 
       // dynamicProperties помечает, какие буферы pixi перезаливает каждый кадр.
