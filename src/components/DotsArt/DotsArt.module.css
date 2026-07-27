@@ -1,0 +1,10 @@
+.dots {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+}
+
+:global(.dark) .dots {
+  filter: invert(100%);
+}

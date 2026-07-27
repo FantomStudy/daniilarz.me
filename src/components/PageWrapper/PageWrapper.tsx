@@ -2,6 +2,7 @@ import type { Frontmatter } from "@/types";
 import { Link, useLocation } from "@tanstack/react-router";
 import clsx from "clsx";
 import { formatDate } from "@/lib/formatDate";
+import { DotFlowField } from "../DotsArt";
 import styles from "./PageWrapper.module.css";
 
 interface PageWrapperProps {
@@ -42,6 +43,8 @@ export const PageWrapper = ({ children, frontmatter }: PageWrapperProps) => {
           </Link>
         </div>
       )}
+
+      <DotFlowField />
     </>
   );
 };
