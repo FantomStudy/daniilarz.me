@@ -1,5 +1,6 @@
 import type { MouseEvent } from "react";
 import { createContext, use, useState } from "react";
+import { flushSync } from "react-dom";
 
 type Mode = "light" | "dark" | "auto";
 type ResolvedTheme = "light" | "dark";
@@ -54,8 +55,10 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     const y = event.clientY;
     const endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
 
-    const transition = document.startViewTransition(async () => {
-      applyMode(resolvedTheme);
+    const transition = document.startViewTransition(() => {
+      flushSync(() => {
+        applyMode(resolvedTheme);
+      });
     });
 
     await transition.ready.then(() => {
