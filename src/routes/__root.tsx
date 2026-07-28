@@ -1,4 +1,5 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import { DotsArt } from "@/components/DotsArt";
 import { Header } from "@/components/Header";
 import { ThemeProvider } from "@/lib/theme";
 import "temporal-polyfill/global";
@@ -32,6 +33,7 @@ const RootComponent = () => {
         <main className="main">
           <Outlet />
         </main>
+        <DotsArt />
       </ThemeProvider>
     </RootDocument>
   );

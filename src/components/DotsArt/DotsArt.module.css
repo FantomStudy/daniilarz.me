@@ -5,6 +5,6 @@
   z-index: -10;
 }
 
-:global(.dark) .dots {
+:global(:root.dark) .dots {
   filter: invert(100%);
 }
