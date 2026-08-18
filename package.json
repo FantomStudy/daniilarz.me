@@ -11,18 +11,18 @@
     "fmt": "oxfmt"
   },
   "dependencies": {
-    "@tanstack/react-router": "^1.170.25",
-    "@tanstack/react-start": "^1.168.42",
+    "@tanstack/react-router": "^1.170.30",
+    "@tanstack/react-start": "^1.168.47",
     "clsx": "^2.1.1",
     "nitro": "^3.0.260610-beta",
     "pixi.js": "^8.19.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "simplex-noise": "^4.0.3",
-    "temporal-polyfill": "^1.0.3"
+    "temporal-polyfill": "^1.0.4"
   },
   "devDependencies": {
-    "@iconify/json": "^2.2.514",
+    "@iconify/json": "^2.2.518",
     "@mdx-js/rollup": "^3.1.1",
     "@shikijs/rehype": "^4.4.3",
     "@svgr/core": "^8.1.0",
@@ -32,8 +32,8 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "@vitejs/plugin-react": "^6.0.5",
-    "oxfmt": "^0.63.0",
-    "oxlint": "^1.78.0",
+    "oxfmt": "^0.64.0",
+    "oxlint": "^1.79.0",
     "oxlint-tsgolint": "^7.0.2001",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-slug": "^6.0.0",
