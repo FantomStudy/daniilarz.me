@@ -6,7 +6,6 @@ type Mode = "light" | "dark" | "auto";
 type ResolvedTheme = "light" | "dark";
 
 interface ThemeContextType {
-  isDark: boolean;
   toggleDark: (event: MouseEvent) => void;
 }
 
@@ -24,8 +23,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     if (stored === "light" || stored === "dark" || stored === "auto") return stored;
     return "auto";
   });
-
-  const resolvedOnClient = !isServer ? (mode === "auto" ? getPreferedTheme() : mode) : "light";
 
   function applyMode(currentTheme: ResolvedTheme) {
     const nextTheme = currentTheme === "dark" ? "light" : "dark";
@@ -85,7 +82,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   return (
     <ThemeContext
       value={{
-        isDark: resolvedOnClient === "dark",
         toggleDark,
       }}
     >

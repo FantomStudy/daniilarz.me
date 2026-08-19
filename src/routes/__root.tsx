@@ -12,7 +12,7 @@ const THEME_INIT_SCRIPT =
 
 const RootDocument = ({ children }: { children: React.ReactNode }) => {
   return (
-    <html lang="ru" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
