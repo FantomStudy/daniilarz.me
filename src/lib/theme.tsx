@@ -1,5 +1,5 @@
 import type { MouseEvent } from "react";
-import { createContext, use, useState } from "react";
+import { createContext, use, useEffect, useState } from "react";
 import { flushSync } from "react-dom";
 
 type Mode = "light" | "dark" | "auto";
@@ -11,40 +11,56 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
-const isServer = typeof window === "undefined";
-
-const getPreferedTheme = (): ResolvedTheme =>
+const getSystemTheme = (): ResolvedTheme =>
   window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+
+const resolveTheme = (mode: Mode): ResolvedTheme => (mode === "auto" ? getSystemTheme() : mode);
+
+const applyTheme = (theme: ResolvedTheme) => {
+  document.documentElement.classList.toggle("dark", theme === "dark");
+};
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [mode, setMode] = useState<Mode>(() => {
-    if (isServer) return "auto";
+    if (typeof window === "undefined") return "auto";
+
     const stored = localStorage.getItem("color-scheme");
     if (stored === "light" || stored === "dark" || stored === "auto") return stored;
+
     return "auto";
   });
 
-  function applyMode(currentTheme: ResolvedTheme) {
-    const nextTheme = currentTheme === "dark" ? "light" : "dark";
+  useEffect(() => {
+    if (mode !== "auto") return undefined;
 
-    const nextMode = nextTheme === getPreferedTheme() ? "auto" : nextTheme;
+    const query = window.matchMedia("(prefers-color-scheme: dark)");
+    const syncSystemTheme = () => applyTheme(resolveTheme(mode));
 
+    syncSystemTheme();
+    query.addEventListener("change", syncSystemTheme);
+
+    return () => query.removeEventListener("change", syncSystemTheme);
+  }, [mode]);
+
+  function commitMode(nextMode: Mode) {
     setMode(nextMode);
 
-    document.documentElement.classList.toggle("dark", nextTheme === "dark");
+    applyTheme(resolveTheme(nextMode));
 
     localStorage.setItem("color-scheme", nextMode);
   }
 
   async function toggleDark(event: MouseEvent) {
-    const resolvedTheme = mode === "auto" ? getPreferedTheme() : mode;
+    const resolvedTheme = resolveTheme(mode);
+    const nextTheme = resolvedTheme === "dark" ? "light" : "dark";
+    const nextMode: Mode = nextTheme === getSystemTheme() ? "auto" : nextTheme;
 
     const canUseViewTransition =
       typeof document.startViewTransition === "function" &&
       !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (!canUseViewTransition) {
-      applyMode(resolvedTheme);
+      commitMode(nextMode);
       return;
     }
 
@@ -52,31 +68,36 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     const y = event.clientY;
     const endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
 
+    const revealsNewTheme = nextTheme === "light";
+
     const transition = document.startViewTransition(() => {
       flushSync(() => {
-        applyMode(resolvedTheme);
+        commitMode(nextMode);
       });
     });
 
-    await transition.ready.then(() => {
-      const clipPath = [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`];
-      const animation = document.documentElement.animate(
-        {
-          clipPath: resolvedTheme === "dark" ? clipPath : [...clipPath].reverse(),
-        },
-        {
-          duration: 400,
-          easing: "ease-out",
-          fill: "forwards",
-          pseudoElement:
-            resolvedTheme === "dark"
-              ? "::view-transition-new(root)"
-              : "::view-transition-old(root)",
-        },
-      );
+    try {
+      await transition.ready;
+    } catch {
+      return;
+    }
 
-      transition.finished.then(() => animation.cancel()).catch(() => {});
-    });
+    const clipPath = [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`];
+    const animation = document.documentElement.animate(
+      {
+        clipPath: revealsNewTheme ? clipPath : [...clipPath].reverse(),
+      },
+      {
+        duration: 400,
+        easing: "ease-out",
+        fill: "forwards",
+        pseudoElement: revealsNewTheme
+          ? "::view-transition-new(root)"
+          : "::view-transition-old(root)",
+      },
+    );
+
+    transition.finished.then(() => animation.cancel()).catch(() => {});
   }
 
   return (
