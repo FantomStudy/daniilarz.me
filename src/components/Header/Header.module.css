@@ -1,3 +1,14 @@
+@keyframes reveal-top-button {
+  from {
+    opacity: 0;
+    visibility: hidden;
+  }
+  to {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
 .topButton {
   position: fixed;
   right: 12px;
@@ -5,18 +16,28 @@
   width: 40px;
   height: 40px;
   border-radius: var(--radius-full);
-  transition: all cubic-bezier(0.4, 0, 0.2, 1) 150ms;
+  transition:
+    background-color cubic-bezier(0.4, 0, 0.2, 1) 150ms,
+    color cubic-bezier(0.4, 0, 0.2, 1) 150ms;
   cursor: pointer;
   color: var(--fg-light);
+
+  /* Hidden by default so pages too short to scroll — where the timeline is
+     inactive and the animation produces no output — keep the button away. */
+  opacity: 0;
+  visibility: hidden;
+
+  /* Revealed past 300px of scroll. The shorthand resets animation-timeline and
+     animation-range, so it has to stay above them. Browsers without
+     scroll-driven animations resolve the duration to 0s and settle on the end
+     frame, leaving the button permanently visible. */
+  animation: reveal-top-button linear both;
+  animation-timeline: scroll(root block);
+  animation-range: 300px 340px;
 
   &:hover {
     background-color: var(--active);
     color: var(--fg-deeper);
-  }
-
-  &[data-hidden="true"] {
-    opacity: 0;
-    pointer-events: none;
   }
 
   @media print {

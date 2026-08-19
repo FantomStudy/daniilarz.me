@@ -5,21 +5,18 @@ import LightbulbIcon from "~icons/ri/lightbulb-line";
 import MoonIcon from "~icons/ri/moon-line";
 import SunIcon from "~icons/ri/sun-line";
 import GithubIcon from "~icons/uil/github-alt";
-import { useWindowScroll } from "@/hooks/useWindowScroll";
 import { useTheme } from "@/lib/theme";
 import styles from "./Header.module.css";
 
 export const Header = () => {
   const { toggleDark } = useTheme();
-  const { value: scroll, scrollTo } = useWindowScroll();
 
   return (
     <header>
       <button
         title="Scroll to top"
         className={styles.topButton}
-        data-hidden={scroll.y < 300}
-        onClick={() => scrollTo({ y: 0 })}
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       >
         <ArrowUpIcon />
       </button>
