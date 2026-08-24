@@ -1,10 +1,10 @@
 import type { Frontmatter } from "@/types";
 import { notFound, lazyRouteComponent } from "@tanstack/react-router";
 
-const meta = import.meta.glob<Frontmatter | undefined>("/content/**/*.mdx", {
+const meta = import.meta.glob<Frontmatter | undefined>("/src/content/**/*.mdx", {
   import: "frontmatter",
 });
-const components = import.meta.glob<{ default: React.ComponentType }>("/content/**/*.mdx");
+const components = import.meta.glob<{ default: React.ComponentType }>("/src/content/**/*.mdx");
 
 const lazyComponents = new Map(
   Object.entries(components).map(([path, imp]) => [
@@ -15,7 +15,7 @@ const lazyComponents = new Map(
 
 function normalize(slug: string) {
   const clean = slug.replace(/\/+$/, "") || "index";
-  return `/content/${clean}.mdx`;
+  return `/src/content/${clean}.mdx`;
 }
 
 export async function getMeta(slug: string) {
