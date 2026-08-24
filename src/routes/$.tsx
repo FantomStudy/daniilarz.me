@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageWrapper } from "@/components/PageWrapper";
-import { getContent, getMeta } from "@/lib/content";
+import { getPageComponent, loadPage } from "@/lib/content/loader";
 
 export const Route = createFileRoute("/$")({
-  loader: ({ params }) => getMeta(params._splat ?? ""),
+  loader: ({ params }) => loadPage(params._splat ?? ""),
   head: ({ loaderData }) => ({
     meta: [
       ...(loaderData?.frontmatter?.title ? [{ title: loaderData.frontmatter.title }] : []),
@@ -18,10 +18,11 @@ export const Route = createFileRoute("/$")({
 function RouteComponent() {
   const { _splat } = Route.useParams();
   const { frontmatter } = Route.useLoaderData();
-  const Content = getContent(_splat ?? "");
+  const Content = getPageComponent(_splat ?? "");
 
   return (
     <PageWrapper frontmatter={frontmatter}>
+      {/* oxlint-disable-next-line react/static-components - Content is a stable reference from the manifest Map, not created on each render */}
       <Content />
     </PageWrapper>
   );

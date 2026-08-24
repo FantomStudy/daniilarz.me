@@ -1,6 +1,6 @@
 import { createRouter } from "@tanstack/react-router";
-import Content, { frontmatter } from "@/content/_404.md";
-import { PageWrapper } from "./components/PageWrapper";
+import { Suspense } from "react";
+import { NotFound } from "./components/NotFound";
 import { routeTree } from "./routeTree.gen";
 
 export function getRouter() {
@@ -9,9 +9,9 @@ export function getRouter() {
     scrollRestoration: true,
     defaultPreload: "intent",
     defaultNotFoundComponent: () => (
-      <PageWrapper frontmatter={frontmatter}>
-        <Content />
-      </PageWrapper>
+      <Suspense fallback={null}>
+        <NotFound />
+      </Suspense>
     ),
   });
 

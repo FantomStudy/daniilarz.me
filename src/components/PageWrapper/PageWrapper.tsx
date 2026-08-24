@@ -1,6 +1,6 @@
 import type { Frontmatter } from "@/types";
 import { Link, useLocation } from "@tanstack/react-router";
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { formatDate } from "@/lib/formatDate";
 import styles from "./PageWrapper.module.css";
 

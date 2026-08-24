@@ -5,6 +5,7 @@ import LightbulbIcon from "~icons/ri/lightbulb-line";
 import MoonIcon from "~icons/ri/moon-line";
 import SunIcon from "~icons/ri/sun-line";
 import GithubIcon from "~icons/uil/github-alt";
+import { Link } from "@/components/Link";
 import { useTheme } from "@/lib/theme";
 import styles from "./Header.module.css";
 
@@ -24,32 +25,27 @@ export const Header = () => {
       <nav className={styles.nav}>
         <div className={styles.left} />
         <div className={styles.right}>
-          <a href="#" title="Blog">
+          <Link href="/" title="Blog">
             <span className="mobile-hidden">Blog</span>
             <span className="mobile-only">
               <ArticleIcon />
             </span>
-          </a>
+          </Link>
 
-          <a href="#" title="Projects">
+          <Link href="/" title="Projects">
             <span className="mobile-hidden">Projects</span>
             <span className="mobile-only">
               <LightbulbIcon />
             </span>
-          </a>
+          </Link>
 
-          <a href="#" title="Photos">
+          <Link href="/" title="Photos">
             <CameraIcon />
-          </a>
+          </Link>
 
-          <a
-            href="https://github.com/FantomStudy"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="GitHub"
-          >
+          <Link href="https://github.com/FantomStudy" title="GitHub">
             <GithubIcon />
-          </a>
+          </Link>
 
           <button onClick={toggleDark} title="Toggle color">
             <SunIcon className="light-only" />

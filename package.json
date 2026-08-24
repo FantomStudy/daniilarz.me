@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@iconify/json": "^2.2.520",
+    "@mdx-js/react": "^3.1.1",
     "@mdx-js/rollup": "^3.1.1",
     "@shikijs/rehype": "^4.4.3",
     "@svgr/core": "^8.1.0",

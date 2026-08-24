@@ -1,6 +1,8 @@
+import { MDXProvider } from "@mdx-js/react";
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { DotsArt } from "@/components/DotsArt";
 import { Header } from "@/components/Header";
+import { Link } from "@/components/Link";
 import { ThemeProvider } from "@/lib/theme";
 import "temporal-polyfill/global";
 import "@/styles/reset.css";
@@ -9,6 +11,8 @@ import "@/styles/markdown.css";
 
 const THEME_INIT_SCRIPT =
   '(function () {const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;const setting = localStorage.getItem("color-scheme") || "auto";if (setting === "dark" || (prefersDark && setting !== "light"))document.documentElement.classList.toggle("dark", true);})();';
+
+const mdxComponents = { a: Link };
 
 const RootDocument = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -29,11 +33,13 @@ const RootComponent = () => {
   return (
     <RootDocument>
       <ThemeProvider>
-        <Header />
-        <main className="main">
-          <Outlet />
-        </main>
-        <DotsArt />
+        <MDXProvider components={mdxComponents}>
+          <Header />
+          <main className="main">
+            <Outlet />
+          </main>
+          <DotsArt />
+        </MDXProvider>
       </ThemeProvider>
     </RootDocument>
   );

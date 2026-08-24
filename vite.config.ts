@@ -10,13 +10,16 @@ import remarkGfm from "remark-gfm";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import icons from "unplugin-icons/vite";
 import { defineConfig } from "vite";
+import { contentPaths, scanPagePaths } from "./vite/content-paths.ts";
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
+    contentPaths(),
     {
       enforce: "pre",
       ...mdx({
+        providerImportSource: "@mdx-js/react",
         remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm],
         rehypePlugins: [
           rehypeSlug,
@@ -45,9 +48,10 @@ export default defineConfig({
       }),
     },
     tanstackStart({
+      pages: scanPagePaths().map((path) => ({ path })),
       prerender: {
         enabled: true,
-        failOnError: false,
+        crawlLinks: false,
       },
     }),
     nitro(),
