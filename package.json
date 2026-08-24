@@ -11,18 +11,18 @@
     "fmt": "oxfmt"
   },
   "dependencies": {
-    "@tanstack/react-router": "^1.170.31",
-    "@tanstack/react-start": "^1.168.48",
+    "@tanstack/react-router": "^1.170.32",
+    "@tanstack/react-start": "^1.168.49",
     "clsx": "^2.1.1",
     "nitro": "^3.0.260610-beta",
-    "pixi.js": "^8.19.0",
+    "pixi.js": "^8.20.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "simplex-noise": "^4.0.3",
     "temporal-polyfill": "^1.0.4"
   },
   "devDependencies": {
-    "@iconify/json": "^2.2.518",
+    "@iconify/json": "^2.2.520",
     "@mdx-js/rollup": "^3.1.1",
     "@shikijs/rehype": "^4.4.3",
     "@svgr/core": "^8.1.0",
@@ -30,10 +30,10 @@
     "@types/mdx": "^2.0.14",
     "@types/node": "^26.2.0",
     "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.4",
-    "@vitejs/plugin-react": "^6.0.5",
-    "oxfmt": "^0.64.0",
-    "oxlint": "^1.79.0",
+    "@types/react-dom": "^19.2.5",
+    "@vitejs/plugin-react": "^6.1.0",
+    "oxfmt": "^0.65.0",
+    "oxlint": "^1.80.0",
     "oxlint-tsgolint": "^7.0.2001",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-slug": "^6.0.0",
@@ -42,6 +42,6 @@
     "remark-mdx-frontmatter": "^5.2.0",
     "typescript": "^7.0.2",
     "unplugin-icons": "^23.0.1",
-    "vite": "^8.2.1"
+    "vite": "^8.2.2"
   }
 }
