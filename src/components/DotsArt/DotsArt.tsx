@@ -1,5 +1,16 @@
-import type { Application, Particle } from "pixi.js";
+// pixi импортируется статически намеренно, хотя и весит больше остального
+// бандла. Ленивый import() внутри эффекта - пробовали, откатили - разносит
+// pixi на 14 чанков со второй волной-водопадом (WebGLRenderer, browserAll,
+// init) и переносит ~секунду исполнения в окно TBT (FCP → TTI). Отложить
+// работу из этого окна нельзя: TTI по определению конец последнего длинного
+// таска. Замеры Lighthouse (мобиль, devtools-троттлинг, по 4 прогона):
+//   ленивый:    TBT 96-165 мс, SI 2475-2655, оценка 97-99
+//   статичный:  TBT 50-69 мс,  SI 2125-2153, оценка 99-100
+// Дело не только в цифрах, но и в разбросе: у ленивой версии он втрое-вшестеро
+// шире, из-за чего оценка скачет  на неизменном коде.
+import { Application, Graphics, Particle, ParticleContainer } from "pixi.js";
 import { useEffect, useRef } from "react";
+import { createNoise3D } from "simplex-noise";
 import styles from "./DotsArt.module.css";
 
 const SCALE = 200; // 200 пикселей на шаг решётки шума
@@ -27,16 +38,8 @@ export const DotsArt = () => {
     const ac = new AbortController();
 
     async function setup() {
-      // Анимация - украшение. При reduce не грузим даже чанк.
+      // Анимация - украшение: при reduce не поднимаем ни канвас, ни ticker.
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-      // pixi весит больше всей остальной страницы. Держим его в отдельном
-      // чанке: статический импорт утянул бы его в бандл гидратации,
-      // который качает каждая страница сайта.
-      const [{ Application, Graphics, Particle, ParticleContainer }, { createNoise3D }] =
-        await Promise.all([import("pixi.js"), import("simplex-noise")]);
-
-      if (cancelled) return;
 
       const a = new Application();
 
