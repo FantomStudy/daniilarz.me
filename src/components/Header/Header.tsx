@@ -39,7 +39,7 @@ export const Header = () => {
             </span>
           </Link>
 
-          <Link href="/" title="Photos">
+          <Link href="/photos" title="Photos">
             <CameraIcon />
           </Link>
 

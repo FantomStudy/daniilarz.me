@@ -1,0 +1,127 @@
+/* Диалог - сосед .gallery, а не потомок, поэтому общие значения объявляем на обоих:
+   вниз по дереву от .gallery они до него не наследуются. */
+.gallery,
+.viewer {
+  --gallery-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --gallery-duration: 300ms;
+}
+
+.gallery {
+  --gallery-gap: 12px;
+  --gallery-width: min(var(--gallery-max-width, 1100px), calc(100vw - 64px));
+
+  /* Галерея шире колонки текста: центрируем её по центру родителя, уходя в
+     отрицательные поля, когда места не хватает. */
+  width: var(--gallery-width);
+  margin-inline: calc((100% - var(--gallery-width)) / 2);
+  columns: 3;
+  column-gap: var(--gallery-gap);
+
+  @media (max-width: 900px) {
+    columns: 2;
+  }
+
+  @media (max-width: 640px) {
+    columns: 1;
+  }
+}
+
+/* Селекторы удвоены намеренно: в .prose уже лежит `img { width: 100%; margin: 2em 0 }`,
+   и с одинаковой специфичностью исход зависел бы от порядка импорта CSS. */
+.gallery .item {
+  display: block;
+  width: 100%;
+  margin-bottom: var(--gallery-gap);
+  border-radius: 0.5rem;
+  background-color: var(--active);
+  overflow: hidden;
+  break-inside: avoid;
+  cursor: zoom-in;
+
+  & img {
+    width: 100%;
+    height: auto;
+    margin: 0;
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: opacity 200ms var(--gallery-ease);
+    }
+  }
+
+  &:hover img,
+  &:focus-visible img {
+    opacity: 0.85;
+  }
+}
+
+.viewer {
+  /* fixed + inset нужны на случай браузера без `overlay`: там диалог при закрытии
+     мгновенно покидает top layer и иначе догорал бы внутри потока страницы.
+     Явные width/height к ним обязательны - в UA-стилях у dialog стоит fit-content,
+     от которого `max-height: 100%` у картинки не считается и вырождается в none. */
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  max-width: none;
+  max-height: none;
+  padding: 16px;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  cursor: zoom-out;
+
+  &[open] {
+    display: flex;
+  }
+
+  /* display и overlay - дискретные: allow-discrete держит диалог в top layer,
+     пока фон и картинка не догаснут. */
+  @media (prefers-reduced-motion: no-preference) {
+    transition:
+      display var(--gallery-duration) allow-discrete,
+      overlay var(--gallery-duration) allow-discrete;
+  }
+
+  &::backdrop {
+    background-color: color-mix(in srgb, var(--bg) 40%, transparent);
+    backdrop-filter: blur(20px);
+    opacity: 0;
+
+    @media (prefers-reduced-motion: no-preference) {
+      transition: opacity var(--gallery-duration) var(--gallery-ease);
+    }
+  }
+
+  &[open]::backdrop {
+    opacity: 1;
+
+    @starting-style {
+      opacity: 0;
+    }
+  }
+}
+
+.viewer .viewerImage {
+  margin: 0;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  border-radius: 0.5rem;
+  object-fit: contain;
+  opacity: 0;
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition: opacity var(--gallery-duration) var(--gallery-ease);
+  }
+}
+
+.viewer[open] .viewerImage[data-ready] {
+  opacity: 1;
+
+  @starting-style {
+    opacity: 0;
+  }
+}
