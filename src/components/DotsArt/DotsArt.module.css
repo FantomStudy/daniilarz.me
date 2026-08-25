@@ -3,6 +3,15 @@
   position: fixed;
   inset: 0;
   z-index: -10;
+
+  /* Канвас приезжает отдельным чанком уже после контента.
+     Без проявления он возникает одним кадром и читается как дефект. */
+  opacity: 0;
+  transition: opacity 600ms ease-out;
+}
+
+.visible {
+  opacity: 1;
 }
 
 :global(:root.dark) .dots {

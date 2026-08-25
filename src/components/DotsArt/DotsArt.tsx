@@ -1,6 +1,5 @@
-import { Application, Graphics, Particle, ParticleContainer } from "pixi.js";
+import type { Application, Particle } from "pixi.js";
 import { useEffect, useRef } from "react";
-import { createNoise3D } from "simplex-noise";
 import styles from "./DotsArt.module.css";
 
 const SCALE = 200; // 200 пикселей на шаг решётки шума
@@ -28,6 +27,17 @@ export const DotsArt = () => {
     const ac = new AbortController();
 
     async function setup() {
+      // Анимация - украшение. При reduce не грузим даже чанк.
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      // pixi весит больше всей остальной страницы. Держим его в отдельном
+      // чанке: статический импорт утянул бы его в бандл гидратации,
+      // который качает каждая страница сайта.
+      const [{ Application, Graphics, Particle, ParticleContainer }, { createNoise3D }] =
+        await Promise.all([import("pixi.js"), import("simplex-noise")]);
+
+      if (cancelled) return;
+
       const a = new Application();
 
       await a.init({
@@ -47,6 +57,10 @@ export const DotsArt = () => {
 
       app = a;
       container.appendChild(a.canvas);
+
+      // Первый кадр рисуется через ~16ms, то есть в самом начале
+      // шестисотмиллисекундного проявления. Пустой канвас увидеть нельзя.
+      container.classList.add(styles.visible);
       a.renderer.resize(window.innerWidth, window.innerHeight);
 
       // Один раз рисуем кружок и превращаем в текстуру.
@@ -138,6 +152,17 @@ export const DotsArt = () => {
           p.particle.alpha = (Math.abs(Math.cos(angle)) * 0.8 + 0.2) * p.opacity;
         }
       });
+
+      // В фоновой вкладке rAF и так придушен браузером, но ticker.stop()
+      // снимает и пересчёт точек, и загрузку в видеокарту.
+      document.addEventListener(
+        "visibilitychange",
+        () => {
+          if (document.hidden) a.ticker.stop();
+          else a.ticker.start();
+        },
+        { signal: ac.signal },
+      );
 
       // Дебаунс: при перетаскивании окна событие сыплется десятками
       // в секунду, а prunePoints линеен по числу точек.
