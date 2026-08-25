@@ -1,8 +1,32 @@
-# CLAUDE.md
+# Daniil Arz's portfolio
 
-## Project
+Daniil Arz's portfolio is a TanStack Start (React 19, SSR) app built around file-based content. Pages are added by dropping `.md` or `.mdx` files into `src/content/`, then routed, rendered through a shared layout, and prerendered automatically at build time.
 
-Daniil Arz's personal portfolio/blog site — a TanStack Start (React 19, SSR) app that renders MDX content pages (blog posts, project pages, an "about" page, etc.) through a shared layout, prerendered at build time.
+## What can't be compromised
+
+- **Blazing-fast is measured, not assumed.** The site should feel fast everywhere, not just on a powerful desktop. Ship what measurements actually show — Lighthouse on mobile with throttling, across several runs — even when they contradict bundle-size intuition. DotsArt's statically imported `pixi.js` is the clearest example: the "obviously worse" larger bundle measured better TBT and a more stable Lighthouse score than the smaller, lazy-loaded version.
+
+- **One source of truth per fact.** File↔URL mapping is defined by one function ([path.ts](src/lib/content/path.ts)) and shared by every part of the system that needs it, including the build-time Vite plugin and the runtime manifest. Don't maintain parallel lists or duplicate logic that can drift apart.
+
+- **Decorative work yields to the visitor.** `DotsArt` skips its WebGL/rAF work under `prefers-reduced-motion` and pauses when the tab is backgrounded — decoration must not cost users who didn't ask for it or aren't looking.
+
+- **No content page is invisible to the prerenderer.** Every file under `src/content/` prerenders whether anything links to it yet or not — an unlinked page silently missing prerendering is a bug, not an edge case.
+
+- **Prefer modern platform APIs.** Use modern web platform APIs when they are a good fit instead of reaching for older patterns or unnecessary abstractions — for example, the View Transitions API and Temporal API.
+
+## The ways to hurt yourself
+
+Each of these has happened before and was diagnosed and reverted.
+
+- **Lazy-loading DotsArt's `pixi.js` import.** It looks like a bundle-size win, but measured worse TBT and a less stable Lighthouse score. Don't split it again on chunk-size grounds without measuring the actual impact.
+
+- **Adding `eager: true` to either glob in [manifest.ts](src/lib/content/manifest.ts).** This silently kills per-page code-splitting. When it happens, `bun run build` prints `[INEFFECTIVE_DYNAMIC_IMPORT]` for each content file.
+
+- **Skipping `page.Component.preload?.()` in `loadPage`.** Client-side navigation renders an empty `<main>` while the page chunk loads, with no visible error.
+
+- **Treating every non-`/` `href` as an external link in [Link](src/components/Link.tsx).** This opens `mailto:` and `#` links in a blank tab.
+
+- **Letting `fonts.css`'s relative `url()` and `__root.tsx`'s `?url` import resolve to different emitted files.** Vite emits the font twice, and the preload warms a URL the CSS never requests — costing 48 KB instead of saving it.
 
 ## Commands
 
@@ -10,67 +34,20 @@ Package manager is `bun`; the scripts themselves are in [package.json](package.j
 
 There is no test suite or runner in this repo — `bun run build` (which runs `tsc -b` first) is the only gate. To type-check without a full build: `tsc --noEmit -p tsconfig.app.json` for app code, or `-p tsconfig.node.json` for `vite.config.ts`, `vite/`, and `scripts/`.
 
-## Architecture
+## Taste
 
-**Routing is file-based via TanStack Router**, generated into [src/routeTree.gen.ts](src/routeTree.gen.ts) — never edit that file by hand; it's regenerated from files under `src/routes/` on dev/build. [src/routes/__root.tsx](src/routes/__root.tsx) defines the document shell (`<html>`, theme-init script, font preload, `<Header>`, `<main>` outlet, `MDXProvider`, `DotsArt`).
+- Components are arrow-function expressions (`export const Foo = (...) => {...}`), not `function Foo()` declarations.
+- Props are typed via a named `interface FooProps` declared above the component, not inline in the destructure.
+- `clsx` for conditional/combined `className`s, not manual template-string concatenation.
+- Comments are rare (see the root-level default: only when the _why_ is non-obvious) — and when one is warranted, it's written in Russian, matching the existing convention in e.g. [DotsArt.tsx](src/components/DotsArt/DotsArt.tsx). Identifiers, docs, and this file stay English; match whichever language a given file's existing comments already use rather than defaulting to English.
 
-**Every content page is served by a single catch-all route, not one file per page.** [src/routes/$.tsx](src/routes/$.tsx) is a TanStack Router splat route (param `_splat`) that matches every path, including `/` itself (`_splat` is `""` at the root — there's deliberately no separate `index.tsx`). The route has no filesystem knowledge itself — it's a thin adapter over [src/lib/content/loader.ts](src/lib/content/loader.ts): `loader` calls `loadPage(_splat)`, `component` calls `getPageComponent(_splat)`. **Adding a page is just dropping a new `.md`/`.mdx` file under `src/content/`** — no new route file, no manual route registration. An unmatched path calls `notFound()`, handled by [src/components/NotFound.tsx](src/components/NotFound.tsx) (below).
+## Where code lives
 
-**Content lives in `src/content/**/*.{md,mdx}`.** A file's path relative to that root maps to its URL via [src/lib/content/path.ts](src/lib/content/path.ts)'s `fileToPagePath`: `use.mdx` ⇒ `/use`, `blog/foo.mdx` ⇒ `/blog/foo`, `index.mdx` ⇒ `/`. **A file or directory named with a leading `_` is hidden** — excluded from the page manifest, from the generated `PagePath` type, and from prerendering (today only `_404.md`, rendered outside the normal content flow — below). Each file exports `frontmatter`, typed by [src/types.ts](src/types.ts)'s `Frontmatter` (`title`, `description`, `date`, `duration`, `wrapperClass`). [mdx.d.ts](mdx.d.ts) declares both `*.mdx` and `*.md` modules — content isn't exclusively MDX. `tsconfig.app.json`'s `include` covers `src`, so new content files are picked up automatically, nothing to add there.
-
-**`src/lib/content/` resolves content — it doesn't render or lay out anything.** Layout stays in the route, which wraps the resolved component in `<PageWrapper frontmatter={frontmatter}>` ([src/components/PageWrapper](src/components/PageWrapper)) — `PageWrapper` renders the title/date/duration/description header, the article body, and (on non-root pages) a `cd ..` back-link styled like a terminal prompt; no per-page opt-out, only `frontmatter.wrapperClass` as an extra header class. The module splits across four files by role:
-
-- [path.ts](src/lib/content/path.ts) — pure path mapping (`isContentFile`, `fileToPagePath`, `splatToPagePath`), no `node:` imports. The same mapping logic runs in the Vite plugin (Node, build time) and in the runtime manifest (browser) — one source of truth for file↔URL, not two lists that can drift apart.
-- [paths.gen.ts](src/lib/content/paths.gen.ts) — **autogenerated, never hand-edit.** Written by the `contentPaths()` Vite plugin ([vite/content-paths.ts](vite/content-paths.ts)) on `buildStart` and on dev-server content add/unlink, and only when the content actually changed (a no-op write would otherwise loop the HMR watcher). Exports `PAGE_PATHS` and the `PagePath` union, consumed by [Link](src/components/Link.tsx) for type-checked internal `href`s. It's committed (so `tsc -b` works on a clean clone) and excluded from oxfmt (`ignorePatterns` in [oxfmt.config.ts](oxfmt.config.ts)) and oxlint (`/* oxlint-disable */` header) — the same treatment `routeTree.gen.ts` already gets.
-- [manifest.ts](src/lib/content/manifest.ts) — the runtime registry: two `import.meta.glob` calls over `/src/content/**/*.{md,mdx}` build a `Map` of page path → `Page` once at module init. **Both globs must stay lazy (no `eager: true`)** — see the code-splitting note below.
-- [loader.ts](src/lib/content/loader.ts) — `loadPage(splat)` (the route's `loader`: returns serializable `{ frontmatter }`, throws `notFound()` if unmatched) and `getPageComponent(splat)` (the route's `component`).
-
-**[vite/content-paths.ts](vite/content-paths.ts) is one filesystem scan feeding two consumers, not two parallel lists.** `scanPagePaths()` walks `src/content` and backs both `paths.gen.ts` generation and, in [vite.config.ts](vite.config.ts), the explicit `pages` list handed to `tanstackStart({ prerender: { crawlLinks: false } })`. Prerendering used to rely on link-crawling (the default), which only reaches pages something already links to — an unlinked page like `/explore` silently never got prerendered. Explicit `pages` + `crawlLinks: false` means every content file prerenders regardless of whether anything links to it yet. `scanPagePaths()` throws on a path collision (e.g. `projects.mdx` and `projects/index.mdx` both resolving to `/projects`) instead of letting one silently shadow the other.
-
-**Content is code-split per page** — each file becomes its own lazily-loaded chunk instead of bloating the main client bundle. In `manifest.ts`: the `meta` glob (`{ import: "frontmatter" }`) backs `loadPage`'s serializable loader data — never return the component (or whole module) from the loader, since TanStack Start serializes loader data via `seroval` and a React component function isn't serializable (returning the whole module broke prerendering the first time this was tried). The `components` glob is wrapped in `lazyRouteComponent` per entry at module init, so `getPageComponent` is a sync `Map.get` returning a stable reference across renders (no remounts) — TanStack Router handles the actual lazy loading, no hand-rolled `React.lazy`/`Suspense`/`useMemo`.
-
-**Regression to watch**: adding `eager: true` to either glob in `manifest.ts` statically imports every content module into the main graph, silently killing the code split — `bun run build` then prints `[INEFFECTIVE_DYNAMIC_IMPORT]` for each content file and page text lands in the main `index-*.js` chunk. This happened once already; if you see that warning, splitting is broken. Confirm with `bun run build`, then check page-unique text only appears in its own `use-*.js`-style chunk under `.output/public/assets/`.
-
-**`loadPage` also preloads the page's component chunk, not just its frontmatter** — it awaits `page.Component.preload?.()` alongside `loadMetadata()`. Without that, client-side navigation briefly rendered an empty `<main>`: the splat route's `component` isn't itself a `lazyRouteComponent`, so TanStack Router's `intent` preloading never touches the actual page chunk, and with no `pendingComponent` the root `Outlet`'s `Suspense` (`fallback: null`) swallows all of `<main>` while the chunk loads. The `?.` is load-bearing, not defensive dressing: `lazyRouteComponent` clears `.preload` after the first resolve, so a second navigation to an already-visited page would throw without it.
-
-**404s stay outside the content manifest, and are lazy too.** [src/content/_404.md](src/content/_404.md) is hidden (leading `_`), so it's excluded from prerendering and `PagePath`. [src/components/NotFound.tsx](src/components/NotFound.tsx) loads its body through a standalone `lazyRouteComponent(() => import("@/content/_404.md"))` and hardcodes `frontmatter={{ title: "404" }}` rather than reading it from the module — one static title isn't worth a second glob. (If `_404.md`'s own heading and this hardcoded title ever diverge, that's cosmetic, not broken.) It's wired as `defaultNotFoundComponent` in [src/router.tsx](src/router.tsx), inside a `<Suspense fallback={null}>` since `lazyRouteComponent` is `React.lazy` underneath.
-
-**The MDX pipeline does more than frontmatter** — the full plugin chain is in `mdx()`'s options in [vite.config.ts](vite.config.ts): `remark-frontmatter` + `remark-mdx-frontmatter` (the `frontmatter` export), `remark-gfm`, `rehype-slug` + `rehype-autolink-headings` (prepends a `#` anchor with class `header-anchor` to every heading), and `@shikijs/rehype` configured with `themes: { light, dark }`. **Shiki highlights at build time and emits both palettes at once**: the light theme as an inline `color` on each token, the dark one as a `--shiki-dark` custom property beside it, which [markdown.css](src/styles/markdown.css) promotes under `html.dark`. No highlighter ships to the client, and code blocks re-theme with the rest of the page — don't reach for a runtime highlighter or a second build pass.
-
-**[Link](src/components/Link.tsx) is the one place internal navigation is decided.** Its `href: PagePath | (string & {})` gives internal links autocomplete/type-checking against the generated `PagePath` union while still accepting external URLs. A `/`-prefixed `href` becomes `<RouterLink to="/$" params={{ _splat: href.slice(1) }}>`; `http(s)://` becomes a plain `<a target="_blank" rel="noopener noreferrer">`; anything else (`mailto:`, `#`, …) is a plain `<a>` — don't widen that last branch to add `target="_blank"`, an earlier version did that for "any non-`/` href" and would have opened blank tabs for `mailto:`/`#` links. It reaches MDX via `MDXProvider` (`@mdx-js/react`, set as `providerImportSource`) wrapping `<Header>`/`<Outlet>` in `__root.tsx`, which maps markdown-syntax links (`[text](/url)`) to `Link`. **Raw JSX `<a>` written directly inside a `.mdx` file bypasses the provider** — MDX only substitutes elements it generates from markdown syntax, never explicit JSX the author wrote; expected MDX behavior, not a bug to chase.
-
-**Fonts are self-hosted and axis-trimmed** — four `.woff2` files in `src/assets/fonts/`, declared in [src/styles/fonts.css](src/styles/fonts.css). Nothing requests `fonts.googleapis.com`/`fonts.gstatic.com` any more. Inter is the variable file carrying **only the `wght` axis** (the `opsz` axis Google ships by default costs 24.7 KB — 34% — on the one file in the critical path, and nothing here asks for it); its italic is static 400; DM Mono is static 400 and 500. They live under `src/assets/` rather than `public/` so Vite fingerprints them. Four rules hold this together:
-
-- **Exactly one preload.** `__root.tsx` preloads `inter-latin.woff2` and nothing else — preload ignores `unicode-range`, so preloading italic or mono would take bandwidth from the one file that blocks first paint. `crossOrigin: "anonymous"` is required even though the file is same-origin; without it the browser fetches it twice.
-- **`fonts.css`'s relative `url()` and `__root.tsx`'s `?url` import must resolve to the same emitted asset.** If they diverge, Vite emits the file twice and the preload warms a URL the CSS never requests — silently costing 48 KB instead of saving anything. Verify: exactly one `inter-latin-*.woff2` in `.output/public/assets/`.
-- **`"Inter Fallback"` is local Arial re-described to occupy Inter's space** (`size-adjust` + the three metric overrides), split into three faces because the ratio differs by weight and style (regular 107.33% vs bold 102.02%) — one shared value leaves headings shifting on swap. The numbers are hardcoded constants generated by [scripts/font-metrics.ts](scripts/font-metrics.ts) (`bun run scripts/font-metrics.ts`); rerun it only if the woff2 files are replaced. Arial is the target because its metrics are identical on every platform, which is why `--font-sans` is the short `Inter, "Inter Fallback", Arial, sans-serif` and not a system stack — a metric override is only meaningful when you know which font the fallback actually is.
-- **DM Mono deliberately has no fallback face.** Monospace advance widths are ~0.6 em across every realistic fallback, and the `line-height`s on `.prose`/`.prose pre` are unitless, so its swap moves no layout.
-
-`font-synthesis: none` in [index.css](src/styles/index.css) is deliberate: with a real 400 italic present, `<strong><em>` renders italic at normal weight instead of a smeared synthetic bold. There's no cyrillic subset yet (no ru content) — `unicode-range` means adding one later costs existing English pages nothing. To bring it back: download `inter-cyrillic.woff2` (18.7 KB) the same way as `inter-latin.woff2` but from the `/* cyrillic */` face, re-add the `CYRILLIC_FREQ` table and cyrillic cases to [scripts/font-metrics.ts](scripts/font-metrics.ts) to regenerate the override numbers, and add the `@font-face` plus its two `"Inter Fallback"` rules to `fonts.css` with `unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116`. Do **not** add it to the preload — preload ignores `unicode-range`, so it would take bandwidth from `inter-latin.woff2`.
-
-**[DotsArt](src/components/DotsArt/DotsArt.tsx) is a decorative pixi.js canvas background, rendered from `__root.tsx` on every page.** Decoration on the hydration path of every route, so three things in it are load-bearing:
-
-- `pixi.js` and `simplex-noise` are **statically imported at module top**, deliberately, even though that puts all of pixi in the entry chunk every page downloads (`index-*.js` at 629 KB raw / ~199 KB brotli, against 385 KB / 107 KB when split out). **This was lazy-loaded once and reverted.** `await import(...)` inside the `useEffect` splits pixi across 14 chunks with a second waterfall wave (`WebGLRenderer`, `browserAll`, `init`) and moves ~1 s of script evaluation into the TBT window (FCP → TTI). The work cannot be deferred back out of that window — TTI is *defined* as the end of the last long task, so `requestIdleCallback`/post-`load` scheduling just drags TTI along with it (measured: no effect). Lighthouse, mobile, devtools throttling, 4 runs each:
-
-  | | TBT | Speed Index | score |
-  | --- | --- | --- | --- |
-  | lazy | 96–165 ms | 2475–2655 | 97–99 |
-  | static | 50–69 ms | 2125–2153 | 99–100 |
-
-  The spread matters as much as the median: lazy-loading made the score jump run to run on unchanged code. On the live deploy the same effect was far worse (TBT 116–1875 ms, score 61–88; blocking the pixi chunk outright gave TBT 0 in all 5 runs). Bundle size is a proxy metric here and the score disagrees with it — don't re-split pixi on chunk-size grounds alone without re-measuring TBT.
-- The `prefers-reduced-motion: reduce` check runs before any canvas or ticker is created. It no longer avoids *downloading* pixi (the static import means every visitor gets those bytes) — it avoids the WebGL context, the particles, and the rAF loop.
-- A `visibilitychange` listener stops/starts `app.ticker`, so a backgrounded tab does no work.
-
-Teardown is an `AbortController` (every listener registered with its `signal`), a `cancelled` flag for the async gap around `Application.init`, and `app.destroy(true, …)`.
-
-**Theming**: [src/lib/theme.tsx](src/lib/theme.tsx) provides a `ThemeProvider`/`useTheme` pair supporting `light` / `dark` / `auto`, persisted to `localStorage` under `color-scheme`. Dark mode is applied by toggling a `dark` class on `<html>`. To avoid a flash of incorrect theme on load, `__root.tsx` inlines a small blocking `THEME_INIT_SCRIPT` in `<head>` that reads `localStorage` and sets the class before hydration — keep that script and the `ThemeProvider` logic in sync if you change how theme is stored/resolved. Theme toggling uses the View Transitions API (circular reveal from the click point) when available and not blocked by `prefers-reduced-motion`.
-
-**Styling**: CSS Modules per component (`Component.module.css` next to `Component.tsx`), plus global styles in [src/styles/](src/styles), all imported once from `__root.tsx`: `reset.css`, `fonts.css` (`@font-face` only), `index.css` (design tokens/utilities), `markdown.css` (MDX/prose content, including the Shiki rules). Design tokens are CSS custom properties on `:root` (e.g. `--fg`, `--bg`, `--font-mono`) redefined under `html.dark`. Global utility classes exist for responsive/theme visibility (`.mobile-only`, `.mobile-hidden`, `.light-only`, `.dark-only`) rather than a utility framework — prefer reusing these over inventing new ones.
-
-**Icons** come from Iconify via `unplugin-icons`, imported as `~icons/<collection>/<name>` (e.g. `~icons/ri/moon-line`), configured to compile to React JSX with a default `icon` class ([vite.config.ts](vite.config.ts)).
-
-**Component export convention**: each component directory has an `index.ts` that does `export * from "./ComponentName"` — import from the directory (`@/components/Header`), not the file directly. [Link.tsx](src/components/Link.tsx) and [NotFound.tsx](src/components/NotFound.tsx) are deliberate exceptions — flat files directly in `src/components/`, a one-off decision made when they were added, not a new pattern to extend. The `@/*` path alias maps to `src/*`.
-
-**Path/module conventions to preserve**: `verbatimModuleSyntax` is on in both tsconfigs — always use `import type` for type-only imports (oxfmt's import sorter also separates type imports into their own group first). `noUnusedLocals`/`noUnusedParameters`/`erasableSyntaxOnly` are enforced — don't leave dead code or rely on TS-only runtime constructs (enums, parameter properties, etc.).
-
-**Dates**: use the `Temporal` API (via `temporal-polyfill/global`, imported once in `__root.tsx`) rather than `Date` — see [src/lib/formatDate.ts](src/lib/formatDate.ts) for the existing `Temporal.PlainDate` pattern.
+- [src/routes/](src/routes/) — file-based routes; `$.tsx` is the one content route, `__root.tsx` the document shell. Generated `routeTree.gen.ts` lives here too — never hand-edit it.
+- [src/content/](src/content/) — every `.md`/`.mdx` page; a file's path is its URL.
+- [src/lib/content/](src/lib/content/) — resolves content → route data (`path.ts`, `paths.gen.ts`, `manifest.ts`, `loader.ts`); no rendering or layout.
+- [src/components/](src/components/) — one directory per component (`Component.tsx` + `Component.module.css` + `index.ts`); [Link.tsx](src/components/Link.tsx)/[NotFound.tsx](src/components/NotFound.tsx) are flat exceptions.
+- [src/styles/](src/styles/) — global CSS (`reset`, `fonts`, `index`, `markdown`), imported once from `__root.tsx`.
+- [src/assets/fonts/](src/assets/fonts/) — self-hosted `.woff2` files, fingerprinted by Vite.
+- [vite/](vite/) — build-time Vite plugins (`content-paths.ts`).
+- [scripts/](scripts/) — one-off tooling (`font-metrics.ts`).
