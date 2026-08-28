@@ -1,33 +1,33 @@
-/* Диалог - сосед .gallery, а не потомок, поэтому общие значения объявляем на обоих:
-   вниз по дереву от .gallery они до него не наследуются. */
 .gallery,
 .viewer {
   --gallery-ease: cubic-bezier(0.4, 0, 0.2, 1);
   --gallery-duration: 300ms;
 }
 
+*:has(.gallery) {
+  margin: 0;
+}
+
 .gallery {
   --gallery-gap: 12px;
-  --gallery-width: min(var(--gallery-max-width, 1100px), calc(100vw - 64px));
 
-  /* Галерея шире колонки текста: центрируем её по центру родителя, уходя в
-     отрицательные поля, когда места не хватает. */
-  width: var(--gallery-width);
-  margin-inline: calc((100% - var(--gallery-width)) / 2);
-  columns: 3;
+  width: calc(100vw - 64px);
+  columns: 4;
   column-gap: var(--gallery-gap);
 
   @media (max-width: 900px) {
-    columns: 2;
+    columns: 3;
   }
 
   @media (max-width: 640px) {
+    columns: 2;
+  }
+
+  @media (max-width: 320px) {
     columns: 1;
   }
 }
 
-/* Селекторы удвоены намеренно: в .prose уже лежит `img { width: 100%; margin: 2em 0 }`,
-   и с одинаковой специфичностью исход зависел бы от порядка импорта CSS. */
 .gallery .item {
   display: block;
   width: 100%;
@@ -55,10 +55,6 @@
 }
 
 .viewer {
-  /* fixed + inset нужны на случай браузера без `overlay`: там диалог при закрытии
-     мгновенно покидает top layer и иначе догорал бы внутри потока страницы.
-     Явные width/height к ним обязательны - в UA-стилях у dialog стоит fit-content,
-     от которого `max-height: 100%` у картинки не считается и вырождается в none. */
   position: fixed;
   inset: 0;
   width: 100%;
@@ -71,6 +67,7 @@
   justify-content: center;
   background-color: transparent;
   cursor: zoom-out;
+  outline: none;
 
   &[open] {
     display: flex;

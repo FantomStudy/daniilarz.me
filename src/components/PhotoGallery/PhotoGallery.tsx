@@ -2,21 +2,15 @@ import { clsx } from "clsx";
 import { useRef, useState } from "react";
 import styles from "./PhotoGallery.module.css";
 
-export interface Photo {
-  src: string;
-  alt: string;
-  /** Полноразмерный вариант, если превью и оригинал - разные файлы. */
-  full?: string;
-  width?: number;
-  height?: number;
-}
+const photos = Object.values(
+  import.meta.glob<string>("@/assets/photos/*.{jpg,webp,avif,svg}", {
+    eager: true,
+    query: "?url",
+    import: "default",
+  }),
+);
 
-interface PhotoGalleryProps {
-  photos: Photo[];
-  className?: string;
-}
-
-export const PhotoGallery = ({ photos, className }: PhotoGalleryProps) => {
+export const PhotoGallery = () => {
   const [active, setActive] = useState<number | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -28,8 +22,19 @@ export const PhotoGallery = ({ photos, className }: PhotoGalleryProps) => {
     dialog.showModal();
   };
 
-  // У картинки из кэша load уже не выстрелит, поэтому готовность проверяем ещё и
-  // на монтировании: без data-ready она так и осталась бы прозрачной.
+  const shift = (delta: number) => {
+    setActive((current) =>
+      current === null ? current : (current + delta + photos.length) % photos.length,
+    );
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDialogElement>) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+
+    event.preventDefault();
+    shift(event.key === "ArrowLeft" ? -1 : 1);
+  };
+
   const markReady = (image: HTMLImageElement | null) => {
     if (image?.complete) image.dataset.ready = "";
   };
@@ -38,37 +43,26 @@ export const PhotoGallery = ({ photos, className }: PhotoGalleryProps) => {
 
   return (
     <>
-      <div className={clsx(styles.gallery, className)}>
+      <div className={clsx(styles.gallery)}>
         {photos.map((photo, index) => (
-          <button
-            key={photo.src}
-            type="button"
-            title={photo.alt}
-            className={styles.item}
-            onClick={() => open(index)}
-          >
-            <img
-              src={photo.src}
-              alt={photo.alt}
-              width={photo.width}
-              height={photo.height}
-              loading="lazy"
-              decoding="async"
-            />
+          <button key={photo} type="button" className={styles.item} onClick={() => open(index)}>
+            <img src={photo} loading="lazy" decoding="async" />
           </button>
         ))}
       </div>
 
-      {/* Закрытие целиком на платформе: Esc и close() снимают [open], дальше
-          дело за transition с allow-discrete. */}
-      <dialog ref={dialogRef} className={styles.viewer} onClick={() => dialogRef.current?.close()}>
+      <dialog
+        ref={dialogRef}
+        className={styles.viewer}
+        onKeyDown={handleKeyDown}
+        onClick={() => dialogRef.current?.close()}
+      >
         {activePhoto && (
           <img
-            key={activePhoto.src}
+            key={activePhoto}
             ref={markReady}
             className={styles.viewerImage}
-            src={activePhoto.full ?? activePhoto.src}
-            alt={activePhoto.alt}
+            src={activePhoto}
             onLoad={(event) => {
               event.currentTarget.dataset.ready = "";
             }}
