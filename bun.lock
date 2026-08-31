@@ -16,7 +16,7 @@
         "temporal-polyfill": "^1.0.4",
       },
       "devDependencies": {
-        "@iconify/json": "^2.2.521",
+        "@iconify/json": "^2.2.522",
         "@mdx-js/react": "^3.1.1",
         "@mdx-js/rollup": "^3.1.1",
         "@shikijs/rehype": "^4.4.3",
@@ -86,7 +86,7 @@
 
     "@emnapi/wasi-threads": ["@emnapi/wasi-threads@1.2.2", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-c95qOXkHdydNKhscBTebqEC1CVAZpyqOfVfBzQ1qgzyl3gfeldUjIggDbIZgDKsHLgnsM+igH7TJ/eAasaVuMA=="],
 
-    "@iconify/json": ["@iconify/json@2.2.521", "", { "dependencies": { "@iconify/types": "*", "pathe": "^2.0.3" } }, "sha512-A28AxL35ElpaZg1vk6tPf4/nJ/6KX+HGYVznyzaNYip0as9KTPfdqKxDI7A5mN4RXedxVOOugHN+nofxkUoEEQ=="],
+    "@iconify/json": ["@iconify/json@2.2.522", "", { "dependencies": { "@iconify/types": "*", "pathe": "^2.0.3" } }, "sha512-YJfmIfMUNaYcmBVig39XoHoX133cDE97Rc9SxNKbfI2fOmfxfuPsZd1L2wv+fczSeq/bTEI+68SxBcg1dSZa2g=="],
 
     "@iconify/types": ["@iconify/types@2.0.0", "", {}, "sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg=="],
 
