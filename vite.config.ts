@@ -39,7 +39,7 @@ export default defineConfig({
             rehypeShiki,
             {
               themes: {
-                light: "github-light-high-contrast",
+                light: "light-plus",
                 dark: "github-dark-high-contrast",
               },
             },
