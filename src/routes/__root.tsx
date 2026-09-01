@@ -5,7 +5,6 @@ import { DotsArt } from "@/components/DotsArt";
 import { Header } from "@/components/Header";
 import { Link } from "@/components/Link";
 import { ThemeProvider } from "@/lib/theme";
-import "temporal-polyfill/global";
 import "@/styles/reset.css";
 import "@/styles/fonts.css";
 import "@/styles/index.css";
