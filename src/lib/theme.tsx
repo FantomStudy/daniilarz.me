@@ -64,11 +64,22 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
-    const x = event.clientX;
-    const y = event.clientY;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = event.detail > 0 ? event.clientX : rect.left + rect.width / 2;
+    const y = event.detail > 0 ? event.clientY : rect.top + rect.height / 2;
     const endRadius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
 
     const revealsNewTheme = nextTheme === "light";
+
+    const root = document.documentElement;
+    root.style.setProperty("--vt-x", `${x}px`);
+    root.style.setProperty("--vt-y", `${y}px`);
+    root.style.setProperty("--vt-r", `${endRadius}px`);
+    root.dataset.vt = revealsNewTheme ? "new" : "old";
+
+    const cleanup = () => {
+      delete root.dataset.vt;
+    };
 
     const transition = document.startViewTransition(() => {
       flushSync(() => {
@@ -79,13 +90,16 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       await transition.ready;
     } catch {
+      cleanup();
       return;
     }
 
-    const clipPath = [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`];
-    const animation = document.documentElement.animate(
+    const maskSize = ["0px 0px", `${endRadius * 2}px ${endRadius * 2}px`];
+    const maskPosition = [`${x}px ${y}px`, `${x - endRadius}px ${y - endRadius}px`];
+    const animation = root.animate(
       {
-        clipPath: revealsNewTheme ? clipPath : [...clipPath].reverse(),
+        maskSize: revealsNewTheme ? maskSize : [...maskSize].reverse(),
+        maskPosition: revealsNewTheme ? maskPosition : [...maskPosition].reverse(),
       },
       {
         duration: 400,
@@ -97,7 +111,12 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       },
     );
 
-    transition.finished.then(() => animation.cancel()).catch(() => {});
+    transition.finished
+      .then(() => {
+        animation.cancel();
+        cleanup();
+      })
+      .catch(cleanup);
   }
 
   return (
