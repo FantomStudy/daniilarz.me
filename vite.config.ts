@@ -7,20 +7,19 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeSlug from "rehype-slug";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
-import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import icons from "unplugin-icons/vite";
 import { defineConfig } from "vite";
-import { contentPaths, scanPagePaths } from "./vite/content-paths.ts";
+import { content, scanPagePaths } from "./vite/content.ts";
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    contentPaths(),
+    content(),
     {
       enforce: "pre",
       ...mdx({
         providerImportSource: "@mdx-js/react",
-        remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm],
+        remarkPlugins: [remarkFrontmatter, remarkGfm],
         rehypePlugins: [
           rehypeSlug,
           [

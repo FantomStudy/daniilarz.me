@@ -1,4 +1,4 @@
-import type { PagePath } from "@/lib/content/paths.gen";
+import type { PagePath } from "@/lib/content/content.gen";
 import { Link as RouterLink } from "@tanstack/react-router";
 
 interface LinkProps extends React.ComponentProps<"a"> {

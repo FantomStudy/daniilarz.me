@@ -26,5 +26,5 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src", "mdx.d.ts"]
+  "include": ["src"]
 }

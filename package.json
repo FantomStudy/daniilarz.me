@@ -42,10 +42,10 @@
     "rehype-slug": "^6.0.0",
     "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.1",
-    "remark-mdx-frontmatter": "^5.2.0",
     "typescript": "^7.0.2",
     "unplugin-icons": "^23.0.1",
     "vite": "^8.2.2",
-    "wawoff2": "^2.0.1"
+    "wawoff2": "^2.0.1",
+    "yaml": "^2.9.0"
   }
 }

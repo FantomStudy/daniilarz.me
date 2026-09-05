@@ -5,3 +5,7 @@ export interface Frontmatter {
   duration?: string;
   wrapperClass?: string;
 }
+
+export interface PageEntry extends Frontmatter {
+  path: string;
+}
