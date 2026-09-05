@@ -25,7 +25,7 @@ export const Header = () => {
       <nav className={styles.nav}>
         <div className={styles.left} />
         <div className={styles.right}>
-          <Link href="/" title="Blog">
+          <Link href="/blog" title="Blog">
             <span className="mobile-hidden">Blog</span>
             <span className="mobile-only">
               <ArticleIcon />
