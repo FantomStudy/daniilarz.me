@@ -11,13 +11,13 @@
     "fmt": "oxfmt"
   },
   "dependencies": {
-    "@tanstack/react-router": "^1.170.33",
-    "@tanstack/react-start": "^1.168.50",
+    "@tanstack/react-router": "^1.170.34",
+    "@tanstack/react-start": "^1.168.51",
     "clsx": "^2.1.1",
     "nitro": "^3.0.260903-beta",
     "pixi.js": "^8.20.1",
-    "react": "^19.2.8",
-    "react-dom": "^19.2.8",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
     "simplex-noise": "^4.0.3"
   },
   "devDependencies": {
@@ -29,9 +29,9 @@
     "@svgr/plugin-jsx": "^8.1.0",
     "@types/fontkit": "^2.0.9",
     "@types/mdx": "^2.0.14",
-    "@types/node": "^26.5.0",
-    "@types/react": "^19.2.18",
-    "@types/react-dom": "^19.2.7",
+    "@types/node": "^26.5.1",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "@types/wawoff2": "^1.0.2",
     "@vitejs/plugin-react": "^6.1.1",
     "fontkit": "^2.0.4",
