@@ -17,7 +17,7 @@ const mdxComponents = { a: Link };
 
 const RootDocument = ({ children }: { children: React.ReactNode }) => {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="ru" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
@@ -59,7 +59,7 @@ export const Route = createRootRoute({
       {
         title: "Daniil Arz",
       },
-      { name: "description", content: "Welcome to my portfolio!" },
+      { name: "description", content: "Даниил Арз, фронтенд-разработчик" },
     ],
     links: [
       {

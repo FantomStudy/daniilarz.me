@@ -13,27 +13,27 @@ export const PAGES: PageEntry[] = [
   },
   {
     path: "/bar",
-    title: "Bar",
-    description: "Drinks that i like",
+    title: "Бар",
+    description: "Напитки, которые мне нравятся",
   },
   {
     path: "/blog",
-    title: "Blog",
+    title: "Блог",
   },
   {
     path: "/blog/content-as-pages",
     title: "Контент как страницы сайта",
     date: "2026-08-31",
-    duration: "4min",
+    duration: "4 мин",
   },
   {
     path: "/explore",
-    title: "Explore",
-    description: "Things I want to try",
+    title: "На заметку",
+    description: "Что хочу попробовать",
   },
   {
     path: "/use",
-    title: "Use",
-    description: "Things I am using",
+    title: "Рабочее место",
+    description: "То, что использую каждый день",
   },
 ];

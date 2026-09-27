@@ -15,7 +15,7 @@ export const Header = () => {
   return (
     <header>
       <button
-        title="Scroll to top"
+        title="Наверх"
         className={styles.topButton}
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       >
@@ -25,21 +25,21 @@ export const Header = () => {
       <nav className={styles.nav}>
         <div className={styles.left} />
         <div className={styles.right}>
-          <Link href="/blog" title="Blog">
-            <span className="mobile-hidden">Blog</span>
+          <Link href="/blog" title="Блог">
+            <span className="mobile-hidden">Блог</span>
             <span className="mobile-only">
               <ArticleIcon />
             </span>
           </Link>
 
-          <Link href="/" title="Projects">
-            <span className="mobile-hidden">Projects</span>
+          <Link href="/" title="Проекты">
+            <span className="mobile-hidden">Проекты</span>
             <span className="mobile-only">
               <LightbulbIcon />
             </span>
           </Link>
 
-          <Link href="/" title="Photos">
+          <Link href="/" title="Фото">
             <CameraIcon />
           </Link>
 
@@ -47,7 +47,7 @@ export const Header = () => {
             <GithubIcon />
           </Link>
 
-          <button onClick={toggleDark} title="Toggle color">
+          <button onClick={toggleDark} title="Сменить тему">
             <SunIcon className="light-only" />
             <MoonIcon className="dark-only" />
           </button>
