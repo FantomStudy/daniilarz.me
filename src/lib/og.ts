@@ -1,6 +1,9 @@
 export const OG_WIDTH = 1200;
 export const OG_HEIGHT = 630;
-export const OG_ORIGIN = "https://daniilarz.me";
+// Адрес, с которого соцсети скачивают картинку. Надпись на карточке — отдельно:
+// домена пока нет, а на картинке хочется видеть будущее имя, а не *.vercel.app.
+export const OG_ORIGIN = "https://daniilarz-me.vercel.app";
+export const OG_LABEL = "daniilarz.me";
 
 export function ogImagePath(pagePath: string) {
   return `/og${pagePath === "/" ? "/index" : pagePath}.png`;

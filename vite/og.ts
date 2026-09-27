@@ -3,7 +3,7 @@ import type { Plugin } from "vite";
 import type { PageEntry } from "../src/types.ts";
 import { readFileSync } from "node:fs";
 import { Renderer } from "@takumi-rs/core";
-import { OG_HEIGHT, OG_ORIGIN, OG_WIDTH, ogImagePath } from "../src/lib/og.ts";
+import { OG_HEIGHT, OG_LABEL, OG_WIDTH, ogImagePath } from "../src/lib/og.ts";
 import { collectPages } from "./content.ts";
 
 const BACKGROUND = "src/assets/og/background.png";
@@ -76,7 +76,7 @@ function card({ title, subtitle }: Card): Node {
       backgroundSize: "100% 100%",
     },
     children: [
-      text(new URL(OG_ORIGIN).host, { fontFamily: "DM Mono", fontSize: 28, color: "#888" }),
+      text(OG_LABEL, { fontFamily: "DM Mono", fontSize: 28, color: "#888" }),
       {
         type: "container",
         style: { display: "flex", flexDirection: "column", gap: 20, maxWidth: 900 },
