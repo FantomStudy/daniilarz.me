@@ -60,7 +60,11 @@ export const Route = createRootRoute({
       {
         title: "Daniil Arz",
       },
-      { name: "description", content: "Даниил Арз, фронтенд-разработчик" },
+      { name: "description", content: "Небольшой сайт, где я пишу о коде, прогулках и напитках" },
+      { property: "og:site_name", content: "Daniil Arz" },
+      { property: "og:locale", content: "ru_RU" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       {

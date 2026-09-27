@@ -27,6 +27,8 @@
     "@shikijs/rehype": "^4.4.3",
     "@svgr/core": "^8.1.0",
     "@svgr/plugin-jsx": "^8.1.0",
+    "@takumi-rs/core": "^2.14.0",
+    "@takumi-rs/helpers": "^2.14.0",
     "@types/fontkit": "^2.0.9",
     "@types/mdx": "^2.0.14",
     "@types/node": "^26.6.3",

@@ -10,11 +10,13 @@ import remarkGfm from "remark-gfm";
 import icons from "unplugin-icons/vite";
 import { defineConfig } from "vite";
 import { content, scanPagePaths } from "./vite/content.ts";
+import { og } from "./vite/og.ts";
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     content(),
+    og(),
     {
       enforce: "pre",
       ...mdx({
