@@ -1,5 +1,6 @@
 import { MDXProvider } from "@mdx-js/react";
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import interCyrillic from "@/assets/fonts/inter-cyrillic.woff2?url";
 import interLatin from "@/assets/fonts/inter-latin.woff2?url";
 import { DotsArt } from "@/components/DotsArt";
 import { Header } from "@/components/Header";
@@ -65,6 +66,13 @@ export const Route = createRootRoute({
       {
         rel: "preload",
         href: interLatin,
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "preload",
+        href: interCyrillic,
         as: "font",
         type: "font/woff2",
         crossOrigin: "anonymous",

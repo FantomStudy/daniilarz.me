@@ -8,6 +8,9 @@
  *
  * avgCharWidth is weighted by English letter frequency — the space glyph
  * alone is ~17% of a typical run, and Inter's is proportionally wider.
+ * Cyrillic gets its own values, weighted by Russian letter frequency: the
+ * Inter/Arial ratio differs by script (italic by ~5%), and the fallback faces
+ * are split by the same unicode-range as the Inter files.
  */
 import type { Font } from "fontkit";
 import { readFileSync } from "node:fs";
@@ -45,6 +48,43 @@ const LATIN_FREQ: Record<string, number> = {
   y: 0.01609,
   z: 0.00063,
   " ": 0.17423,
+};
+
+// Russian letter frequencies, per the Russian National Corpus. Space is
+// excluded: it lives in the latin range, so the latin face sizes it.
+const CYRILLIC_FREQ: Record<string, number> = {
+  о: 0.10983,
+  е: 0.08483,
+  а: 0.07998,
+  и: 0.07367,
+  н: 0.067,
+  т: 0.06318,
+  с: 0.05473,
+  р: 0.04746,
+  в: 0.04533,
+  л: 0.04343,
+  к: 0.03486,
+  м: 0.03203,
+  д: 0.02977,
+  п: 0.02804,
+  у: 0.02615,
+  я: 0.02001,
+  ы: 0.01898,
+  ь: 0.01735,
+  г: 0.01687,
+  з: 0.01641,
+  б: 0.01592,
+  ч: 0.0145,
+  й: 0.01208,
+  х: 0.00966,
+  ж: 0.0094,
+  ш: 0.00718,
+  ю: 0.00639,
+  ц: 0.00486,
+  щ: 0.00361,
+  э: 0.00331,
+  ф: 0.00267,
+  ъ: 0.00037,
 };
 
 /** fontkit's create() may hand back a collection; these files never are. */
@@ -86,12 +126,21 @@ function vertical(font: Font) {
 
 const latin = await openWoff2("src/assets/fonts/inter-latin.woff2");
 const latinItalic = await openWoff2("src/assets/fonts/inter-latin-italic.woff2");
+const cyrillic = await openWoff2("src/assets/fonts/inter-cyrillic.woff2");
+const cyrillicItalic = await openWoff2("src/assets/fonts/inter-cyrillic-italic.woff2");
 const { ascent, descent, lineGap } = vertical(latin);
 
+// Weight 500 (every heading) is its own case: Arial has no 500, so the
+// browser keeps regular Arial while Inter gets ~1.5% wider than at 400.
 const cases = [
-  ["latin, weight 100-500", latin, 400, "Arial.ttf", LATIN_FREQ],
+  ["latin, weight 100-400", latin, 400, "Arial.ttf", LATIN_FREQ],
+  ["latin, weight 500", latin, 500, "Arial.ttf", LATIN_FREQ],
   ["latin, weight 600-900", latin, 700, "Arial Bold.ttf", LATIN_FREQ],
   ["latin italic", latinItalic, undefined, "Arial Italic.ttf", LATIN_FREQ],
+  ["cyrillic, weight 100-400", cyrillic, 400, "Arial.ttf", CYRILLIC_FREQ],
+  ["cyrillic, weight 500", cyrillic, 500, "Arial.ttf", CYRILLIC_FREQ],
+  ["cyrillic, weight 600-900", cyrillic, 700, "Arial Bold.ttf", CYRILLIC_FREQ],
+  ["cyrillic italic", cyrillicItalic, undefined, "Arial Italic.ttf", CYRILLIC_FREQ],
 ] as const;
 
 for (const [label, font, wght, arialFile, freq] of cases) {
