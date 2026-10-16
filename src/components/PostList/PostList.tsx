@@ -1,4 +1,4 @@
-import type { PageEntry } from "@/types";
+import type { PageEntry } from "@/lib/content/types";
 import { useLocation } from "@tanstack/react-router";
 import { Fragment } from "react";
 import { Link } from "@/components/Link";

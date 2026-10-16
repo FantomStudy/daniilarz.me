@@ -1,17 +1,22 @@
-function isHidden(file: string) {
-  return file.split("/").some((segment) => segment.startsWith("_"));
-}
+const EXTENSIONS = [".md", ".mdx"];
 
 export function isContentFile(file: string) {
-  return /\.mdx?$/.test(file) && !isHidden(file);
+  const isHidden = file.split("/").some((segment) => segment.startsWith("_"));
+  return EXTENSIONS.some((ext) => file.endsWith(ext)) && !isHidden;
 }
 
+function toPagePath(segments: string[]) {
+  return "/" + segments.filter(Boolean).join("/");
+}
+
+// "bar.mdx" -> "/bar", "blog/index.mdx" -> "/blog", "index.md" -> "/"
 export function fileToPagePath(file: string) {
-  const slug = file.replace(/\.mdx?$/, "").replace(/(^|\/)index$/, "");
-  return `/${slug}`.replace(/\/$/, "") || "/";
+  const segments = file.slice(0, file.lastIndexOf(".")).split("/");
+  if (segments.at(-1) === "index") segments.pop();
+  return toPagePath(segments);
 }
 
+// "blog/post/" -> "/blog/post", "" -> "/"
 export function splatToPagePath(splat: string) {
-  const clean = splat.replace(/^\/+|\/+$/g, "");
-  return clean ? `/${clean}` : "/";
+  return toPagePath(splat.split("/"));
 }

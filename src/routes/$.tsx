@@ -1,16 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageWrapper } from "@/components/PageWrapper";
-import { getPageComponent, loadPage } from "@/lib/content/loader";
-import { splatToPagePath } from "@/lib/content/path";
+import { getPageComponent, loadPage } from "@/lib/content/pages";
 import { ogMeta } from "@/lib/og";
 
 export const Route = createFileRoute("/$")({
   loader: ({ params }) => loadPage(params._splat ?? ""),
-  head: ({ loaderData, params }) => {
+  head: ({ loaderData }) => {
     if (!loaderData) return {};
 
-    const path = splatToPagePath(params._splat ?? "");
-    const { title, description } = loaderData.frontmatter;
+    const { path, title, description } = loaderData;
 
     return {
       meta: [
@@ -24,13 +22,12 @@ export const Route = createFileRoute("/$")({
 });
 
 function RouteComponent() {
-  const { _splat } = Route.useParams();
-  const { frontmatter } = Route.useLoaderData();
-  const Content = getPageComponent(_splat ?? "");
+  const page = Route.useLoaderData();
+  const Content = getPageComponent(page.path);
 
   return (
-    <PageWrapper frontmatter={frontmatter}>
-      {/* oxlint-disable-next-line react/static-components - Content is a stable reference from the manifest Map, not created on each render */}
+    <PageWrapper frontmatter={page}>
+      {/* oxlint-disable-next-line react/static-components - Content is a stable reference from the pages Map, not created on each render */}
       <Content />
     </PageWrapper>
   );
