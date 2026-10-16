@@ -1,15 +1,13 @@
 import type { Node } from "@takumi-rs/core";
 import type { Plugin } from "vite";
-import type { PageEntry } from "../src/types.ts";
+import type { PageEntry } from "../src/lib/content/types.ts";
 import { readFileSync } from "node:fs";
 import { Renderer } from "@takumi-rs/core";
 import { OG_HEIGHT, OG_LABEL, OG_WIDTH, ogImagePath } from "../src/lib/og.ts";
 import { collectPages } from "./content.ts";
 
 const BACKGROUND = "src/assets/og/background.png";
-// Сабсеты Inter режутся по unicode-range, как в fonts.css. Без subsetOf
-// takumi считает их разными семействами, и знаки, которых нет в кириллическом
-// файле (запятая), уходят в DM Mono.
+
 const FONTS = [
   {
     file: "src/assets/fonts/inter-latin.woff2",
@@ -51,10 +49,9 @@ interface Card {
   subtitle?: string;
 }
 
-// Вложенная страница подписывается разделом: у статьи крупно «Блог»,
-// а её название уходит в подзаголовок.
 function toCard(page: PageEntry, titleByPath: Map<string, string>): Card {
   const section = titleByPath.get(page.path.slice(0, page.path.lastIndexOf("/")));
+
   return section
     ? { title: section, subtitle: page.title }
     : { title: page.title, subtitle: page.description };

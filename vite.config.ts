@@ -9,14 +9,12 @@ import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import icons from "unplugin-icons/vite";
 import { defineConfig } from "vite";
-import { content, scanPagePaths } from "./vite/content.ts";
+import { collectPages, content } from "./vite/content.ts";
 import { og } from "./vite/og.ts";
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
-    content(),
-    og(),
     {
       enforce: "pre",
       ...mdx({
@@ -48,8 +46,10 @@ export default defineConfig({
         ],
       }),
     },
+    content(),
+    og(),
     tanstackStart({
-      pages: scanPagePaths().map((path) => ({ path })),
+      pages: collectPages().map(({ path }) => ({ path })),
       prerender: {
         enabled: true,
         crawlLinks: false,
@@ -57,7 +57,11 @@ export default defineConfig({
     }),
     nitro(),
     react({ include: /\.(mdx|md|tsx|ts)$/ }),
-    icons({ compiler: "jsx", jsx: "react", defaultClass: "icon" }),
+    icons({
+      compiler: "jsx",
+      jsx: "react",
+      defaultClass: "icon",
+    }),
   ],
   resolve: {
     tsconfigPaths: true,

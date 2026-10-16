@@ -14,8 +14,6 @@ import "@/styles/markdown.css";
 const THEME_INIT_SCRIPT =
   '(function () {const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;const setting = localStorage.getItem("color-scheme") || "auto";if (setting === "dark" || (prefersDark && setting !== "light"))document.documentElement.classList.toggle("dark", true);})();';
 
-const mdxComponents = { a: Link };
-
 const RootDocument = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="ru" suppressHydrationWarning>
@@ -35,7 +33,7 @@ const RootComponent = () => {
   return (
     <RootDocument>
       <ThemeProvider>
-        <MDXProvider components={mdxComponents}>
+        <MDXProvider components={{ a: Link }}>
           <Header />
           <main className="main">
             <Outlet />
