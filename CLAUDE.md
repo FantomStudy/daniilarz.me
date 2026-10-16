@@ -6,7 +6,7 @@ Daniil Arz's portfolio is a TanStack Start (React 19, SSR) app built around file
 
 - **Blazing-fast is measured, not assumed.** The site should feel fast everywhere, not just on a powerful desktop. Ship what measurements actually show — Lighthouse on mobile with throttling, across several runs — even when they contradict bundle-size intuition. DotsArt's statically imported `pixi.js` is the clearest example: the "obviously worse" larger bundle measured better TBT and a more stable Lighthouse score than the smaller, lazy-loaded version.
 
-- **One source of truth per fact.** File↔URL mapping is defined by one function ([path.ts](src/lib/content/path.ts)) and shared by every part of the system that needs it, including the build-time Vite plugin and the runtime manifest. Don't maintain parallel lists or duplicate logic that can drift apart.
+- **One source of truth per fact.** File↔URL mapping is defined by one function ([path.ts](src/lib/content/path.ts)) and shared by every part of the system that needs it, including the build-time Vite plugin ([vite/content.ts](vite/content.ts)) and the runtime page lookup ([pages.ts](src/lib/content/pages.ts)). Don't maintain parallel lists or duplicate logic that can drift apart.
 
 - **Decorative work yields to the visitor.** `DotsArt` skips its WebGL/rAF work under `prefers-reduced-motion` and pauses when the tab is backgrounded — decoration must not cost users who didn't ask for it or aren't looking.
 
@@ -20,9 +20,9 @@ Each of these has happened before and was diagnosed and reverted.
 
 - **Lazy-loading DotsArt's `pixi.js` import.** It looks like a bundle-size win, but measured worse TBT and a less stable Lighthouse score. Don't split it again on chunk-size grounds without measuring the actual impact.
 
-- **Adding `eager: true` to either glob in [manifest.ts](src/lib/content/manifest.ts).** This silently kills per-page code-splitting. When it happens, `bun run build` prints `[INEFFECTIVE_DYNAMIC_IMPORT]` for each content file.
+- **Adding `eager: true` to the glob in [pages.ts](src/lib/content/pages.ts).** This silently kills per-page code-splitting. When it happens, `bun run build` prints `[INEFFECTIVE_DYNAMIC_IMPORT]` for each content file.
 
-- **Skipping `page.Component.preload?.()` in `loadPage`.** Client-side navigation renders an empty `<main>` while the page chunk loads, with no visible error.
+- **Skipping the component's `preload?.()` in `loadPage`.** Client-side navigation renders an empty `<main>` while the page chunk loads, with no visible error.
 
 - **Treating every non-`/` `href` as an external link in [Link](src/components/Link.tsx).** This opens `mailto:` and `#` links in a blank tab.
 
@@ -43,11 +43,11 @@ There is no test suite or runner in this repo — `bun run build` (which runs `t
 
 ## Where code lives
 
-- [src/routes/](src/routes/) — file-based routes; `$.tsx` is the one content route, `__root.tsx` the document shell. Generated `routeTree.gen.ts` lives here too — never hand-edit it.
+- [src/routes/](src/routes/) — file-based routes; `$.tsx` is the one content route, `__root.tsx` the document shell. The generated `src/routeTree.gen.ts` is never hand-edited.
 - [src/content/](src/content/) — every `.md`/`.mdx` page; a file's path is its URL.
-- [src/lib/content/](src/lib/content/) — resolves content → route data (`path.ts`, `paths.gen.ts`, `manifest.ts`, `loader.ts`); no rendering or layout.
+- [src/lib/content/](src/lib/content/) — resolves content → route data; no rendering or layout. `types.ts` (what a page is), `path.ts` (file↔URL rules), `content.gen.ts` (generated page list with frontmatter — never hand-edit), `pages.ts` (joins that list with the lazy page components; `loadPage`/`getPageComponent` are all `$.tsx` uses).
 - [src/components/](src/components/) — one directory per component (`Component.tsx` + `Component.module.css` + `index.ts`); [Link.tsx](src/components/Link.tsx)/[NotFound.tsx](src/components/NotFound.tsx) are flat exceptions.
 - [src/styles/](src/styles/) — global CSS (`reset`, `fonts`, `index`, `markdown`), imported once from `__root.tsx`.
-- [src/assets/fonts/](src/assets/fonts/) — self-hosted `.woff2` files, fingerprinted by Vite.
-- [vite/](vite/) — build-time Vite plugins (`content-paths.ts`).
-- [scripts/](scripts/) — one-off tooling (`font-metrics.ts`).
+- [src/assets/fonts/](src/assets/fonts/) — self-hosted `.woff2` files, fingerprinted by Vite. [src/assets/og/](src/assets/og/) holds the committed Open Graph background.
+- [vite/](vite/) — build-time Vite plugins: `content.ts` (scans `src/content/`, writes `content.gen.ts`, feeds the prerender list) and `og.ts` (renders one OG image per page). They import `path.ts`, `types.ts`, and `src/lib/og.ts` directly, so those modules must stay environment-neutral: no imports, no `@/` alias, no browser APIs — `tsconfig.node.json` (no DOM lib) enforces it.
+- [scripts/](scripts/) — hand-run tooling whose output is committed, never run by the build: `font-metrics.ts` (fallback-font overrides pasted into `fonts.css`; rerun only if the woff2 files change) and `og-background.ts` (writes `src/assets/og/background.png`).
