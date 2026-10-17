@@ -9,6 +9,7 @@ import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import icons from "unplugin-icons/vite";
 import { defineConfig } from "vite";
+import { imagetools } from "vite-imagetools";
 import { collectPages, content } from "./vite/content.ts";
 import { og } from "./vite/og.ts";
 
@@ -62,6 +63,7 @@ export default defineConfig({
       jsx: "react",
       defaultClass: "icon",
     }),
+    imagetools(),
   ],
   resolve: {
     tsconfigPaths: true,
