@@ -1,0 +1,81 @@
+.root {
+  --cols: 4;
+  --gap: 8px;
+
+  container-type: inline-size;
+
+  @media (max-width: 1024px) {
+    --cols: 3;
+  }
+
+  @media (max-width: 640px) {
+    --cols: 2;
+    --gap: 4px;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  column-gap: var(--gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  margin: 0;
+}
+
+.picture {
+  display: contents;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* row-gap обнулён: отступ — padding внутри ячейки, иначе gap ломает расчёт span */
+.masonry {
+  grid-auto-rows: calc(
+    (100cqi - (var(--cols) - 1) * var(--gap)) / var(--cols) / var(--rows-per-column)
+  );
+
+  & .item {
+    grid-row: span var(--span);
+    padding-bottom: var(--gap);
+  }
+
+  & .image {
+    height: 100%;
+  }
+}
+
+.square {
+  row-gap: var(--gap);
+
+  & .image {
+    height: auto;
+    aspect-ratio: 1;
+  }
+}
+
+.modeButton {
+  display: flex;
+  margin-bottom: 16px;
+  padding: 8px;
+  border-radius: var(--radius-full);
+  color: var(--fg-deeper);
+  font-size: 1.125rem;
+  opacity: 0.2;
+  transition:
+    opacity 0.2s ease,
+    background-color 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+    background-color: #8881;
+  }
+}

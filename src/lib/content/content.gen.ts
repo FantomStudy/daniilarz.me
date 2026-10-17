@@ -3,7 +3,7 @@
 
 import type { PageEntry } from "./types";
 
-export const PAGE_PATHS = ["/", "/bar", "/blog", "/blog/content-as-pages", "/explore", "/use"] as const;
+export const PAGE_PATHS = ["/", "/bar", "/blog", "/blog/content-as-pages", "/explore", "/photos", "/use"] as const;
 
 export type PagePath = (typeof PAGE_PATHS)[number];
 
@@ -31,6 +31,11 @@ export const PAGES: PageEntry[] = [
     path: "/explore",
     title: "На заметку",
     description: "Что хочу попробовать",
+  },
+  {
+    path: "/photos",
+    title: "Галерея",
+    layout: "wide",
   },
   {
     path: "/use",

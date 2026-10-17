@@ -6,15 +6,16 @@ import styles from "./PageWrapper.module.css";
 
 interface PageWrapperProps {
   children: React.ReactNode;
-  frontmatter?: Frontmatter;
+  frontmatter: Frontmatter;
 }
 
 export const PageWrapper = ({ children, frontmatter }: PageWrapperProps) => {
   const pathname = useLocation({ select: (location) => location.pathname });
+  const isWide = frontmatter.layout === "wide";
 
   return (
     <>
-      {frontmatter && (
+      {!isWide && (
         <div className={clsx("prose", styles.header, frontmatter.wrapperClass)}>
           <h1>{frontmatter.title}</h1>
 
@@ -31,7 +32,7 @@ export const PageWrapper = ({ children, frontmatter }: PageWrapperProps) => {
         </div>
       )}
 
-      <article className={clsx("prose", styles.article)}>{children}</article>
+      <article className={clsx(!isWide && "prose", styles.article)}>{children}</article>
 
       {pathname !== "/" && (
         <div className={clsx("prose", styles.footer)}>
