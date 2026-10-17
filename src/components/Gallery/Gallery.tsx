@@ -11,7 +11,7 @@ const EAGER_COUNT = 4;
 
 const ROWS_PER_COLUMN = 40;
 
-const SIZES = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw";
+const SIZES = "(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw";
 
 export const Gallery = () => {
   const [mode, setMode] = useGalleryMode("square");

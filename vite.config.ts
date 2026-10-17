@@ -11,7 +11,7 @@ import icons from "unplugin-icons/vite";
 import { defineConfig } from "vite";
 import { imagetools } from "vite-imagetools";
 import { collectPages, content } from "./vite/content.ts";
-import { og } from "./vite/og.ts";
+import { og } from "./vite/og/index.tsx";
 
 // https://vite.dev/config/
 export default defineConfig({
