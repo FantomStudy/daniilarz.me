@@ -8,8 +8,12 @@
     --cols: 3;
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 768px) {
     --cols: 2;
+  }
+
+  @media (max-width: 640px) {
+    --cols: 1;
     --gap: 4px;
   }
 }
