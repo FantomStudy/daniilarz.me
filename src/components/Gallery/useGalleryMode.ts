@@ -1,28 +1,27 @@
 import { useSyncExternalStore } from "react";
 
-export type GalleryMode = "masonry" | "square";
+type GalleryMode = "masonry" | "square";
 
-const STORAGE_KEY = "gallery-mode";
+const STORAGE_KEY = "daniilarz-gallery-mode";
 
 const listeners = new Set<() => void>();
 
 let current: GalleryMode | null | undefined;
 
-const isGalleryMode = (value: unknown): value is GalleryMode =>
-  value === "masonry" || value === "square";
+const subscribe = (listener: () => void) => {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+};
 
 const readSaved = () => {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    return isGalleryMode(saved) ? saved : null;
+    const isGalleryMode = saved === "masonry" || saved === "square";
+
+    return isGalleryMode ? saved : null;
   } catch {
     return null;
   }
-};
-
-const subscribe = (listener: () => void) => {
-  listeners.add(listener);
-  return () => listeners.delete(listener);
 };
 
 const getSnapshot = () => (current ??= readSaved());

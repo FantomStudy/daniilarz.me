@@ -2,24 +2,19 @@ import { clsx } from "clsx";
 import GridIcon from "~icons/ri/layout-grid-line";
 import MasonryIcon from "~icons/ri/layout-masonry-line";
 import { PHOTOS } from "./photos";
-import { type GalleryMode, useGalleryMode } from "./useGalleryMode";
+import { useGalleryMode } from "./useGalleryMode";
 import styles from "./Gallery.module.css";
-
-interface GalleryProps {
-  defaultMode?: GalleryMode;
-}
 
 const MODE_ICONS = { masonry: MasonryIcon, square: GridIcon };
 
 const EAGER_COUNT = 4;
 
-// Высота ряда masonry — 1/ROWS_PER_COLUMN ширины колонки, поэтому span не зависит от ширины экрана
 const ROWS_PER_COLUMN = 40;
 
 const SIZES = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw";
 
-export const Gallery = ({ defaultMode = "masonry" }: GalleryProps) => {
-  const [mode, setMode] = useGalleryMode(defaultMode);
+export const Gallery = () => {
+  const [mode, setMode] = useGalleryMode("square");
   const ModeIcon = MODE_ICONS[mode];
 
   return (

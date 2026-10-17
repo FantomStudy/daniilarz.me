@@ -63,19 +63,19 @@
 }
 
 .modeButton {
-  display: flex;
-  margin-bottom: 16px;
-  padding: 8px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--radius-full);
-  color: var(--fg-deeper);
-  font-size: 1.125rem;
-  opacity: 0.2;
+  cursor: pointer;
+  color: var(--fg-light);
   transition:
-    opacity 0.2s ease,
-    background-color 0.2s ease;
+    background-color cubic-bezier(0.4, 0, 0.2, 1) 150ms,
+    color cubic-bezier(0.4, 0, 0.2, 1) 150ms;
+
+  margin-bottom: 16px;
 
   &:hover {
-    opacity: 1;
-    background-color: #8881;
+    background-color: var(--active);
+    color: var(--fg-deeper);
   }
 }
