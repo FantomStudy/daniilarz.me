@@ -1,0 +1,52 @@
+@scope (.gallery) to (dialog) {
+  :scope {
+    --cols: 4;
+    --gap: 8px;
+
+    @media (max-width: 1024px) {
+      --cols: 3;
+    }
+
+    @media (max-width: 768px) {
+      --cols: 2;
+    }
+
+    @media (max-width: 640px) {
+      --cols: 1;
+      --gap: 4px;
+    }
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    gap: var(--gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .item {
+    margin: 0;
+  }
+
+  .picture {
+    display: contents;
+  }
+
+  .open {
+    display: block;
+    width: 100%;
+    cursor: zoom-in;
+  }
+
+  .image {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    background-size: cover;
+    background-position: center;
+  }
+}
