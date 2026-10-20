@@ -14,7 +14,7 @@ const PHOTOS_DIR = "/src/assets/photos/";
 const pictures = import.meta.glob<Picture>("/src/assets/photos/*.{jpg,jpeg,png,webp}", {
   eager: true,
   import: "default",
-  query: { w: "480;960;1440;2048", format: "avif;webp", quality: "70", as: "picture" },
+  query: { w: "480;960;1440;2048", format: "webp", quality: "70", as: "picture" },
 });
 
 const placeholders = import.meta.glob<string>("/src/assets/photos/*.{jpg,jpeg,png,webp}", {

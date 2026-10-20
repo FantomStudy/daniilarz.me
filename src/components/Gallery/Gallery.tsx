@@ -53,7 +53,6 @@ export const Gallery = () => {
                   alt={photo.alt}
                   decoding="async"
                   loading="lazy"
-                  fetchPriority={index === 0 ? "high" : undefined}
                 />
               </picture>
             </button>
