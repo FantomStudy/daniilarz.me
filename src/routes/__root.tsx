@@ -1,5 +1,6 @@
 import { MDXProvider } from "@mdx-js/react";
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import interCyrillic from "@/assets/fonts/inter-cyrillic.woff2?url";
 import interLatin from "@/assets/fonts/inter-latin.woff2?url";
 import { DotsArt } from "@/components/DotsArt";
@@ -39,6 +40,7 @@ const RootComponent = () => {
             <Outlet />
           </main>
           <DotsArt />
+          <SpeedInsights />
         </MDXProvider>
       </ThemeProvider>
     </RootDocument>
