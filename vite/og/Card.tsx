@@ -1,5 +1,3 @@
-import { OG_LABEL } from "../../src/lib/og.ts";
-
 export const BACKGROUND = "src/assets/og/background.png";
 
 export interface CardProps {
@@ -22,7 +20,7 @@ export const Card = ({ title, subtitle }: CardProps) => (
       backgroundSize: "100% 100%",
     }}
   >
-    <span style={{ fontFamily: "DM Mono", fontSize: 28, color: "#888" }}>{OG_LABEL}</span>
+    <span style={{ fontFamily: "DM Mono", fontSize: 28, color: "#888" }}>daniilarz.me</span>
     <div style={{ display: "flex", flexDirection: "column", gap: 20, maxWidth: 900 }}>
       <span style={{ fontSize: 76, fontWeight: 500, lineHeight: 1.15, letterSpacing: "0.005em" }}>
         {title}

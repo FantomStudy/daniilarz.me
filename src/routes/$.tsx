@@ -12,7 +12,7 @@ export const Route = createFileRoute("/$")({
 
     return {
       meta: [
-        { title },
+        { title: path === "/" ? title : `${title} - Daniil Arz` },
         ...(description ? [{ name: "description", content: description }] : []),
         ...ogMeta(path, title, description),
       ],
