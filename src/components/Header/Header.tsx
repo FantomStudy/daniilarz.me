@@ -22,8 +22,12 @@ export const Header = () => {
         <ArrowUpIcon />
       </button>
 
+      <Link href="/" className={styles.logo}>
+        <img src="/logo.svg" alt="logo" />
+      </Link>
+
       <nav className={styles.nav}>
-        <div className={styles.left} />
+        <div className={styles.spacer} />
         <div className={styles.right}>
           <Link href="/blog" title="Блог">
             <span className="mobile-hidden">Блог</span>

@@ -67,6 +67,7 @@ export const Route = createRootRoute({
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      { rel: "icon", href: "/logo.svg", type: "image/svg+xml" },
       {
         rel: "preload",
         href: interLatin,

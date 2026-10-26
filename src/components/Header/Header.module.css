@@ -41,13 +41,26 @@
   }
 }
 
+.logo {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  margin: 20px;
+}
+
 .nav {
   display: flex;
   padding: 32px;
 }
 
-.left {
+.spacer {
   flex: 1;
+}
+
+.left img {
+  position: absolute;
+  width: 48px;
+  height: 48px;
 }
 
 .right {
