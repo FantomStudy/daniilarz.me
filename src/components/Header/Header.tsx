@@ -23,7 +23,7 @@ export const Header = () => {
       </button>
 
       <Link href="/" className={styles.logo}>
-        <img src="/logo.svg" alt="logo" />
+        <img src="/logo.svg" alt="Daniil Arz" />
       </Link>
 
       <nav className={styles.nav}>

@@ -12,41 +12,6 @@ import "@/styles/fonts.css";
 import "@/styles/index.css";
 import "@/styles/markdown.css";
 
-const THEME_INIT_SCRIPT =
-  '(function () {const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;const setting = localStorage.getItem("color-scheme") || "auto";if (setting === "dark" || (prefersDark && setting !== "light"))document.documentElement.classList.toggle("dark", true);})();';
-
-const RootDocument = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <html lang="ru" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  );
-};
-
-const RootComponent = () => {
-  return (
-    <RootDocument>
-      <ThemeProvider>
-        <MDXProvider components={{ a: Link }}>
-          <Header />
-          <main className="main">
-            <Outlet />
-          </main>
-          <DotsArt />
-          <SpeedInsights />
-        </MDXProvider>
-      </ThemeProvider>
-    </RootDocument>
-  );
-};
-
 export const Route = createRootRoute({
   head: () => ({
     meta: [
@@ -60,14 +25,33 @@ export const Route = createRootRoute({
       {
         title: "Daniil Arz",
       },
-      { name: "description", content: "Небольшой сайт, где я пишу о коде, прогулках и напитках" },
-      { property: "og:site_name", content: "Daniil Arz" },
-      { property: "og:locale", content: "ru_RU" },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      {
+        name: "description",
+        content: "Небольшой сайт, где я пишу о коде, прогулках и напитках",
+      },
+      {
+        property: "og:site_name",
+        content: "Daniil Arz",
+      },
+      {
+        property: "og:locale",
+        content: "ru_RU",
+      },
+      {
+        property: "og:type",
+        content: "website",
+      },
+      {
+        name: "twitter:card",
+        content: "summary_large_image",
+      },
     ],
     links: [
-      { rel: "icon", href: "/logo.svg", type: "image/svg+xml" },
+      {
+        rel: "icon",
+        href: "/logo.svg",
+        type: "image/svg+xml",
+      },
       {
         rel: "preload",
         href: interLatin,
@@ -86,3 +70,38 @@ export const Route = createRootRoute({
   }),
   component: RootComponent,
 });
+
+const THEME_INIT_SCRIPT =
+  '(function () {const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;const setting = localStorage.getItem("color-scheme") || "auto";if (setting === "dark" || (prefersDark && setting !== "light"))document.documentElement.classList.toggle("dark", true);})();';
+
+function RootDocument({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="ru" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <HeadContent />
+      </head>
+      <body>
+        {children}
+        <Scripts />
+      </body>
+    </html>
+  );
+}
+
+function RootComponent() {
+  return (
+    <RootDocument>
+      <ThemeProvider>
+        <MDXProvider components={{ a: Link }}>
+          <Header />
+          <main className="main">
+            <Outlet />
+          </main>
+          <DotsArt />
+          <SpeedInsights />
+        </MDXProvider>
+      </ThemeProvider>
+    </RootDocument>
+  );
+}
