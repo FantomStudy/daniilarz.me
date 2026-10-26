@@ -12,7 +12,7 @@ Daniil Arz's portfolio is a TanStack Start (React 19, SSR) app built around file
 
 - **No content page is invisible to the prerenderer.** Every file under `src/content/` prerenders whether anything links to it yet or not — an unlinked page silently missing prerendering is a bug, not an edge case.
 
-- **Prefer modern platform APIs.** Use modern web platform APIs when they are a good fit instead of reaching for older patterns or unnecessary abstractions — for example, the View Transitions API and Temporal API.
+- **Prefer modern platform APIs.** Use modern web platform APIs when they are a good fit instead of reaching for older patterns or unnecessary abstractions — for example, the View Transitions API. Check browser support first: Temporal was tried and dropped because it isn't available everywhere yet, so dates use `Date`.
 
 ## The ways to hurt yourself
 
@@ -36,7 +36,7 @@ There is no test suite or runner in this repo — `bun run build` (which runs `t
 
 ## Taste
 
-- Components are arrow-function expressions (`export const Foo = (...) => {...}`), not `function Foo()` declarations.
+- Components are arrow-function expressions (`export const Foo = (...) => {...}`), not `function Foo()` declarations. The exception is route files in `src/routes/`: `export const Route = ...` goes first, and the components it references are hoisted `function` declarations below it, so the route's metadata reads top-down.
 - Props are typed via a named `interface FooProps` declared above the component, not inline in the destructure.
 - `clsx` for conditional/combined `className`s, not manual template-string concatenation.
 - Comments are rare (see the root-level default: only when the _why_ is non-obvious) — and when one is warranted, it's written in Russian, matching the existing convention in e.g. [DotsArt.tsx](src/components/DotsArt/DotsArt.tsx). Identifiers, docs, and this file stay English; match whichever language a given file's existing comments already use rather than defaulting to English.
