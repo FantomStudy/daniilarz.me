@@ -1,8 +1,7 @@
 import type { PageEntry } from "@/lib/content/types";
-import { useLocation } from "@tanstack/react-router";
+import { useLocation, useRouter } from "@tanstack/react-router";
 import { Fragment } from "react";
 import { Link } from "@/components/Link";
-import { PAGES } from "@/lib/content/content.gen";
 import { formatDate } from "@/lib/formatDate";
 import styles from "./PostList.module.css";
 
@@ -10,11 +9,13 @@ const getYear = (post?: PageEntry) => post?.date?.slice(0, 4);
 
 export const PostList = () => {
   const pathname = useLocation({ select: (location) => location.pathname });
+  const routes = useRouter().routesById;
   const prefix = `${pathname.replace(/\/$/, "")}/`;
 
-  const posts = PAGES.filter((page) => page.path.startsWith(prefix)).sort((a, b) =>
-    (b.date ?? "").localeCompare(a.date ?? ""),
-  );
+  const posts = Object.values(routes)
+    .flatMap((route) => route.options.staticData?.page ?? [])
+    .filter((page) => page.path.startsWith(prefix))
+    .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
 
   return (
     <>

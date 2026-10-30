@@ -1,3 +1,4 @@
+import type { PageEntry } from "./lib/content/types";
 import { createRouter } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { NotFound } from "./components/NotFound";
@@ -21,5 +22,9 @@ export function getRouter() {
 declare module "@tanstack/react-router" {
   interface Register {
     router: ReturnType<typeof getRouter>;
+  }
+
+  interface StaticDataRouteOption {
+    page?: PageEntry;
   }
 }

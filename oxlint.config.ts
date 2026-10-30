@@ -17,6 +17,6 @@ export default defineConfig({
     "import/no-cycle": "error",
     "import/no-duplicates": "error",
     "import/no-unassigned-import": "off",
-    "no-underscore-dangle": ["warn", { allow: ["_splat"] }],
+    "no-underscore-dangle": "warn",
   },
 });

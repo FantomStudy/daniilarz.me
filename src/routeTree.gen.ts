@@ -9,50 +9,207 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SplatRouteImport } from './routes/$'
+import { Route as contentRouteRouteImport } from './routes/(content)/route'
+import { Route as contentIndexRouteImport } from './routes/(content)/index'
+import { Route as contentBarRouteImport } from './routes/(content)/bar'
+import { Route as contentExploreRouteImport } from './routes/(content)/explore'
+import { Route as contentPhotosRouteImport } from './routes/(content)/photos'
+import { Route as contentUseRouteImport } from './routes/(content)/use'
+import { Route as contentBlogIndexRouteImport } from './routes/(content)/blog/index'
+import { Route as contentBlogContentAsPagesRouteImport } from './routes/(content)/blog/content-as-pages'
 
-const SplatRoute = SplatRouteImport.update({
-  id: '/$',
-  path: '/$',
+const contentRouteRoute = contentRouteRouteImport.update({
+  id: '/(content)',
   getParentRoute: () => rootRouteImport,
 } as any)
+const contentIndexRoute = contentIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => contentRouteRoute,
+} as any)
+const contentBarRoute = contentBarRouteImport.update({
+  id: '/bar',
+  path: '/bar',
+  getParentRoute: () => contentRouteRoute,
+} as any)
+const contentExploreRoute = contentExploreRouteImport.update({
+  id: '/explore',
+  path: '/explore',
+  getParentRoute: () => contentRouteRoute,
+} as any)
+const contentPhotosRoute = contentPhotosRouteImport.update({
+  id: '/photos',
+  path: '/photos',
+  getParentRoute: () => contentRouteRoute,
+} as any)
+const contentUseRoute = contentUseRouteImport.update({
+  id: '/use',
+  path: '/use',
+  getParentRoute: () => contentRouteRoute,
+} as any)
+const contentBlogIndexRoute = contentBlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => contentRouteRoute,
+} as any)
+const contentBlogContentAsPagesRoute =
+  contentBlogContentAsPagesRouteImport.update({
+    id: '/blog/content-as-pages',
+    path: '/blog/content-as-pages',
+    getParentRoute: () => contentRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/$': typeof SplatRoute
+  '/bar': typeof contentBarRoute
+  '/explore': typeof contentExploreRoute
+  '/photos': typeof contentPhotosRoute
+  '/use': typeof contentUseRoute
+  '/': typeof contentIndexRoute
+  '/blog/content-as-pages': typeof contentBlogContentAsPagesRoute
+  '/blog/': typeof contentBlogIndexRoute
 }
 export interface FileRoutesByTo {
-  '/$': typeof SplatRoute
+  '/bar': typeof contentBarRoute
+  '/explore': typeof contentExploreRoute
+  '/photos': typeof contentPhotosRoute
+  '/use': typeof contentUseRoute
+  '/': typeof contentIndexRoute
+  '/blog/content-as-pages': typeof contentBlogContentAsPagesRoute
+  '/blog': typeof contentBlogIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/$': typeof SplatRoute
+  '/(content)': typeof contentRouteRouteWithChildren
+  '/(content)/bar': typeof contentBarRoute
+  '/(content)/explore': typeof contentExploreRoute
+  '/(content)/photos': typeof contentPhotosRoute
+  '/(content)/use': typeof contentUseRoute
+  '/(content)/': typeof contentIndexRoute
+  '/(content)/blog/content-as-pages': typeof contentBlogContentAsPagesRoute
+  '/(content)/blog/': typeof contentBlogIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/$'
+  fullPaths:
+    | '/bar'
+    | '/explore'
+    | '/photos'
+    | '/use'
+    | '/'
+    | '/blog/content-as-pages'
+    | '/blog/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/$'
-  id: '__root__' | '/$'
+  to:
+    | '/bar'
+    | '/explore'
+    | '/photos'
+    | '/use'
+    | '/'
+    | '/blog/content-as-pages'
+    | '/blog'
+  id:
+    | '__root__'
+    | '/(content)'
+    | '/(content)/bar'
+    | '/(content)/explore'
+    | '/(content)/photos'
+    | '/(content)/use'
+    | '/(content)/'
+    | '/(content)/blog/content-as-pages'
+    | '/(content)/blog/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  SplatRoute: typeof SplatRoute
+  contentRouteRoute: typeof contentRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/$': {
-      id: '/$'
-      path: '/$'
-      fullPath: '/$'
-      preLoaderRoute: typeof SplatRouteImport
+    '/(content)': {
+      id: '/(content)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof contentRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(content)/': {
+      id: '/(content)/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof contentIndexRouteImport
+      parentRoute: typeof contentRouteRoute
+    }
+    '/(content)/bar': {
+      id: '/(content)/bar'
+      path: '/bar'
+      fullPath: '/bar'
+      preLoaderRoute: typeof contentBarRouteImport
+      parentRoute: typeof contentRouteRoute
+    }
+    '/(content)/explore': {
+      id: '/(content)/explore'
+      path: '/explore'
+      fullPath: '/explore'
+      preLoaderRoute: typeof contentExploreRouteImport
+      parentRoute: typeof contentRouteRoute
+    }
+    '/(content)/photos': {
+      id: '/(content)/photos'
+      path: '/photos'
+      fullPath: '/photos'
+      preLoaderRoute: typeof contentPhotosRouteImport
+      parentRoute: typeof contentRouteRoute
+    }
+    '/(content)/use': {
+      id: '/(content)/use'
+      path: '/use'
+      fullPath: '/use'
+      preLoaderRoute: typeof contentUseRouteImport
+      parentRoute: typeof contentRouteRoute
+    }
+    '/(content)/blog/': {
+      id: '/(content)/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof contentBlogIndexRouteImport
+      parentRoute: typeof contentRouteRoute
+    }
+    '/(content)/blog/content-as-pages': {
+      id: '/(content)/blog/content-as-pages'
+      path: '/blog/content-as-pages'
+      fullPath: '/blog/content-as-pages'
+      preLoaderRoute: typeof contentBlogContentAsPagesRouteImport
+      parentRoute: typeof contentRouteRoute
     }
   }
 }
 
+interface contentRouteRouteChildren {
+  contentBarRoute: typeof contentBarRoute
+  contentExploreRoute: typeof contentExploreRoute
+  contentPhotosRoute: typeof contentPhotosRoute
+  contentUseRoute: typeof contentUseRoute
+  contentIndexRoute: typeof contentIndexRoute
+  contentBlogContentAsPagesRoute: typeof contentBlogContentAsPagesRoute
+  contentBlogIndexRoute: typeof contentBlogIndexRoute
+}
+
+const contentRouteRouteChildren: contentRouteRouteChildren = {
+  contentBarRoute: contentBarRoute,
+  contentExploreRoute: contentExploreRoute,
+  contentPhotosRoute: contentPhotosRoute,
+  contentUseRoute: contentUseRoute,
+  contentIndexRoute: contentIndexRoute,
+  contentBlogContentAsPagesRoute: contentBlogContentAsPagesRoute,
+  contentBlogIndexRoute: contentBlogIndexRoute,
+}
+
+const contentRouteRouteWithChildren = contentRouteRoute._addFileChildren(
+  contentRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
-  SplatRoute: SplatRoute,
+  contentRouteRoute: contentRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
