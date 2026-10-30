@@ -11,8 +11,7 @@ import icons from "unplugin-icons/vite";
 import { defineConfig } from "vite";
 import { imagetools } from "vite-imagetools";
 import { SITE_ORIGIN } from "./src/lib/meta.ts";
-import { collectPages } from "./vite/content/collect.ts";
-import { content } from "./vite/content/index.ts";
+import { collectPages, content } from "./vite/content/index.ts";
 import { og } from "./vite/og/index.tsx";
 
 const pages = collectPages();
