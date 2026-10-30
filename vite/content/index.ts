@@ -1,15 +1,11 @@
 import type { Plugin } from "vite";
-import { relative } from "node:path";
-import { CONTENT_DIR, readContentFile } from "./collect.ts";
-import { isContentFile } from "./path.ts";
-import { syncRoutes, writeRoute } from "./routes.ts";
-
-function toContentFile(path: string, root: string = CONTENT_DIR) {
-  const file = relative(root, path).replaceAll("\\", "/");
-  return file.startsWith("..") ? null : file;
-}
+import { resolve, sep } from "node:path";
+import { CONTENT_DIR } from "./collect.ts";
+import { syncRoutes } from "./routes.ts";
 
 export function content(): Plugin {
+  const contentDir = resolve(CONTENT_DIR) + sep;
+
   return {
     name: "content",
     // Роуты должны появиться раньше, чем генератор TanStack Router соберёт дерево
@@ -17,16 +13,9 @@ export function content(): Plugin {
       syncRoutes();
     },
     configureServer(server) {
-      server.watcher.on("change", (path) => {
-        const file = toContentFile(path);
-        if (file && isContentFile(file)) writeRoute(readContentFile(file));
+      server.watcher.on("all", (_event, path) => {
+        if (path.startsWith(contentDir)) syncRoutes();
       });
-
-      for (const event of ["add", "unlink", "unlinkDir"] as const) {
-        server.watcher.on(event, (path) => {
-          if (toContentFile(path) !== null) syncRoutes();
-        });
-      }
     },
   };
 }
