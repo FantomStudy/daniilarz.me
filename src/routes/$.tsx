@@ -27,6 +27,10 @@ function RouteComponent() {
 
   return (
     <PageWrapper frontmatter={page}>
+      {/* CSS чанка страницы известен только серверу: на клиенте его подключает сам Vite при загрузке чанка */}
+      {page.css.map((href) => (
+        <link key={href} rel="stylesheet" href={href} precedence="default" />
+      ))}
       {/* oxlint-disable-next-line react/static-components - Content is a stable reference from the pages Map, not created on each render */}
       <Content />
     </PageWrapper>

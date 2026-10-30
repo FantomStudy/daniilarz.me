@@ -1,10 +1,7 @@
 import { useRef, useState } from "react";
-import { stylesheet } from "@/lib/stylesheet";
 import { Lightbox, preloadPhoto } from "./Lightbox";
 import { PHOTOS } from "./photos";
-import stylesHref from "./Gallery.css?url";
-
-const STYLESHEET = stylesheet(stylesHref);
+import styles from "./Gallery.module.css";
 
 const SIZES = "(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw";
 
@@ -27,25 +24,24 @@ export const Gallery = () => {
   };
 
   return (
-    <div className="gallery">
-      {STYLESHEET}
-      <ul className="grid">
+    <div className={styles.root}>
+      <ul className={styles.grid}>
         {PHOTOS.map((photo, index) => (
-          <li key={photo.src} className="item">
+          <li key={photo.src} className={styles.item}>
             <button
               type="button"
               aria-label={`Открыть ${photo.alt}`}
-              className="open"
+              className={styles.open}
               onClick={() => open(index)}
               onPointerEnter={() => preloadPhoto(photo)}
               onFocus={() => preloadPhoto(photo)}
             >
-              <picture className="picture">
+              <picture className={styles.picture}>
                 {Object.entries(photo.sources).map(([format, srcSet]) => (
                   <source key={format} type={`image/${format}`} srcSet={srcSet} sizes={SIZES} />
                 ))}
                 <img
-                  className="image"
+                  className={styles.image}
                   style={{ backgroundImage: `url(${photo.placeholder})` }}
                   src={photo.src}
                   width={photo.width}

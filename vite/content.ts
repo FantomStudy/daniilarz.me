@@ -1,4 +1,4 @@
-import type { Plugin } from "vite";
+import type { Plugin, Rolldown } from "vite";
 import type { Frontmatter, PageEntry } from "../src/lib/content/types.ts";
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
@@ -7,6 +7,9 @@ import { fileToPagePath, isContentFile } from "../src/lib/content/path.ts";
 
 const CONTENT_DIR = "src/content";
 const OUTPUT_FILE = "src/lib/content/content.gen.ts";
+
+const PAGE_CSS_MODULE = "virtual:page-css";
+const RESOLVED_PAGE_CSS_MODULE = `\0${PAGE_CSS_MODULE}`;
 
 const BOM = /^\uFEFF/;
 
@@ -77,11 +80,61 @@ function isContentChange(path: string, root: string = CONTENT_DIR) {
   return !relative(root, path).replaceAll("\\", "/").startsWith("..");
 }
 
+function collectChunkCss(
+  bundle: Rolldown.OutputBundle,
+  fileName: string,
+  seen: Set<string>,
+): string[] {
+  const chunk = bundle[fileName];
+  if (seen.has(fileName) || chunk?.type !== "chunk" || chunk.isEntry) return [];
+  seen.add(fileName);
+
+  return [
+    ...chunk.imports.flatMap((imported) => collectChunkCss(bundle, imported, seen)),
+    ...(chunk.viteMetadata?.importedCss ?? []),
+  ];
+}
+
+function collectPageCss(bundle: Rolldown.OutputBundle, contentRoot: string, base: string) {
+  const pageCss: Record<string, string[]> = {};
+
+  for (const chunk of Object.values(bundle)) {
+    if (chunk.type !== "chunk" || !chunk.facadeModuleId) continue;
+
+    const file = relative(contentRoot, chunk.facadeModuleId).replaceAll("\\", "/");
+    if (file.startsWith("..") || !isContentFile(file)) continue;
+
+    const css = new Set(collectChunkCss(bundle, chunk.fileName, new Set()));
+    if (css.size) pageCss[fileToPagePath(file)] = [...css].map((href) => base + href);
+  }
+
+  return pageCss;
+}
+
 export function content(): Plugin {
+  let contentRoot = CONTENT_DIR;
+  let base = "/";
+  let pageCss: Record<string, string[]> = {};
+
   return {
     name: "content",
+    configResolved(config) {
+      contentRoot = join(config.root, CONTENT_DIR);
+      base = config.base;
+    },
     buildStart() {
       generate();
+    },
+    resolveId(id) {
+      return id === PAGE_CSS_MODULE ? RESOLVED_PAGE_CSS_MODULE : null;
+    },
+    load(id) {
+      if (id !== RESOLVED_PAGE_CSS_MODULE) return null;
+      const css = this.environment.name === "ssr" ? pageCss : {};
+      return `export default ${JSON.stringify(css)};`;
+    },
+    generateBundle(_options, bundle) {
+      if (this.environment.name === "client") pageCss = collectPageCss(bundle, contentRoot, base);
     },
     configureServer(server) {
       for (const event of ["add", "change", "unlink", "unlinkDir"] as const) {

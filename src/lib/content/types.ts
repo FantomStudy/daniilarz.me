@@ -12,3 +12,7 @@ export type PageLayout = "prose" | "wide";
 export interface PageEntry extends Frontmatter {
   path: string;
 }
+
+export interface LoadedPage extends PageEntry {
+  css: string[];
+}

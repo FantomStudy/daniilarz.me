@@ -1,6 +1,7 @@
 import type { RouteComponent } from "@tanstack/react-router";
-import type { PageEntry } from "./types";
+import type { LoadedPage, PageEntry } from "./types";
 import { lazyRouteComponent, notFound } from "@tanstack/react-router";
+import pageCss from "virtual:page-css";
 import { PAGES } from "./content.gen";
 import { fileToPagePath, isContentFile, splatToPagePath } from "./path";
 
@@ -31,10 +32,10 @@ export function getPageComponent(path: string): RouteComponent {
   return Component;
 }
 
-export async function loadPage(splat: string): Promise<PageEntry> {
+export async function loadPage(splat: string): Promise<LoadedPage> {
   const entry = entries.get(splatToPagePath(splat));
   if (!entry) throw notFound();
 
   await getPageComponent(entry.path).preload?.();
-  return entry;
+  return { ...entry, css: pageCss[entry.path] ?? [] };
 }
