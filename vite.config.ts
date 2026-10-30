@@ -10,10 +10,12 @@ import remarkGfm from "remark-gfm";
 import icons from "unplugin-icons/vite";
 import { defineConfig } from "vite";
 import { imagetools } from "vite-imagetools";
-import { SITE_ORIGIN } from "./src/lib/og.ts";
+import { SITE_ORIGIN } from "./src/lib/meta.ts";
 import { collectPages } from "./vite/content/collect.ts";
 import { content } from "./vite/content/index.ts";
 import { og } from "./vite/og/index.tsx";
+
+const pages = collectPages();
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -50,9 +52,9 @@ export default defineConfig({
       }),
     },
     content(),
-    og(),
+    og(pages),
     tanstackStart({
-      pages: collectPages().map(({ path, date }) => ({ path, sitemap: { lastmod: date } })),
+      pages: pages.map(({ path, date }) => ({ path, sitemap: { lastmod: date } })),
       sitemap: {
         enabled: true,
         host: SITE_ORIGIN,

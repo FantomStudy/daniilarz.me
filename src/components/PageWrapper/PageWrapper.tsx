@@ -1,4 +1,4 @@
-import type { Frontmatter } from "@/lib/content/types";
+import type { Frontmatter } from "@/lib/meta";
 import { Link, useLocation } from "@tanstack/react-router";
 import { clsx } from "clsx";
 import { formatDate } from "@/lib/formatDate";

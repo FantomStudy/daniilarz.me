@@ -16,12 +16,12 @@ function render({ file, page }: ContentFile) {
   return `/* oxlint-disable */
 ${HEADER} from src/content/${file} — do not edit
 
-import type { PageEntry } from "@/lib/content/types";
+import type { PageMeta } from "@/lib/meta";
 import { createFileRoute } from "@tanstack/react-router";
 import Content from "@/content/${file}";
-import { pageHead } from "@/lib/content/head";
+import { pageHead } from "@/lib/meta";
 
-const page: PageEntry = {
+const page: PageMeta = {
 ${fields}};
 
 export const Route = createFileRoute(${JSON.stringify(fileToRouteId(file))})({
@@ -32,28 +32,27 @@ export const Route = createFileRoute(${JSON.stringify(fileToRouteId(file))})({
 `;
 }
 
-function write(file: string, output: string) {
-  if (existsSync(file) && readFileSync(file, "utf8") === output) return;
-  mkdirSync(dirname(file), { recursive: true });
-  writeFileSync(file, output);
-}
-
-// Рукописные файлы вроде route.tsx живут рядом со сгенерированными — удаляем только свои
-function removeStale(expected: Set<string>) {
-  if (!existsSync(ROUTES_DIR)) return;
-
-  for (const entry of readdirSync(ROUTES_DIR, { recursive: true, encoding: "utf8" })) {
-    const file = join(ROUTES_DIR, entry);
-    if (!file.endsWith(".tsx") || expected.has(file)) continue;
-    if (readFileSync(file, "utf8").includes(HEADER)) rmSync(file);
-  }
-}
-
 export function syncRoutes() {
   const routes = new Map(
     collectContent().map((content) => [join(ROUTES_DIR, fileToRouteFile(content.file)), content]),
   );
 
-  removeStale(new Set(routes.keys()));
-  for (const [file, content] of routes) write(file, render(content));
+  if (existsSync(ROUTES_DIR)) {
+    for (const entry of readdirSync(ROUTES_DIR, { recursive: true, encoding: "utf8" })) {
+      const file = join(ROUTES_DIR, entry);
+
+      // Удаляем только сгенерированные файлы
+      const isOrphan = file.endsWith(".tsx") && !routes.has(file);
+      if (isOrphan && readFileSync(file, "utf8").includes(HEADER)) rmSync(file);
+    }
+  }
+
+  for (const [file, content] of routes) {
+    const output = render(content);
+
+    if (existsSync(file) && readFileSync(file, "utf8") === output) continue;
+
+    mkdirSync(dirname(file), { recursive: true });
+    writeFileSync(file, output);
+  }
 }

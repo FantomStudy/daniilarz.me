@@ -1,11 +1,11 @@
-import type { PageEntry } from "@/lib/content/types";
+import type { PageMeta } from "@/lib/meta";
 import { useLocation, useRouter } from "@tanstack/react-router";
 import { Fragment } from "react";
 import { Link } from "@/components/Link";
 import { formatDate } from "@/lib/formatDate";
 import styles from "./PostList.module.css";
 
-const getYear = (post?: PageEntry) => post?.date?.slice(0, 4);
+const getYear = (post?: PageMeta) => post?.date?.slice(0, 4);
 
 export const PostList = () => {
   const pathname = useLocation({ select: (location) => location.pathname });
