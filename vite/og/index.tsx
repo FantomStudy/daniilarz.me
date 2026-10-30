@@ -23,21 +23,19 @@ function toCardProps(page: PageMeta, titleByPath: Map<string, string>): CardProp
     : { title: page.title, subtitle: page.description };
 }
 
-async function createRenderer() {
-  const renderer = new Renderer();
-  await Promise.all(
-    FONTS.map(({ file, ...font }) => renderer.registerFont({ ...font, data: readFileSync(file) })),
-  );
-  return renderer;
-}
-
 export function og(pages: PageMeta[]): Plugin {
   return {
     name: "og",
     apply: "build",
     applyToEnvironment: (environment) => environment.name === "client",
     async generateBundle() {
-      const renderer = await createRenderer();
+      const renderer = new Renderer();
+      await Promise.all(
+        FONTS.map(({ file, ...font }) =>
+          renderer.registerFont({ ...font, data: readFileSync(file) }),
+        ),
+      );
+
       const images = [{ src: BACKGROUND, data: readFileSync(BACKGROUND) }];
 
       const titleByPath = new Map(pages.map((page) => [page.path, page.title]));
