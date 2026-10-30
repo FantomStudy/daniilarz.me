@@ -1,6 +1,7 @@
 const EXTENSIONS = [".md", ".mdx"];
 
-const UNESCAPABLE = /[$%!#?:*<>|()[\]{}]/;
+// kebab-case: роутер не прочитает такое имя как свой синтаксис, так что экранировать нечего
+const SEGMENT = /^[a-z0-9][a-z0-9-]*$/;
 
 export function isContentFile(file: string) {
   const isHidden = file.split("/").some((segment) => segment.startsWith("_"));
@@ -8,7 +9,10 @@ export function isContentFile(file: string) {
 }
 
 function segments(file: string) {
-  return file.slice(0, file.lastIndexOf(".")).split("/");
+  const parts = file.slice(0, file.lastIndexOf(".")).split("/");
+  if (parts.some((part) => !SEGMENT.test(part) || part === "route"))
+    throw new Error(`Content page "${file}" must be named in kebab-case and not "route"`);
+  return parts;
 }
 
 // "bar.mdx" -> "/bar", "blog/index.mdx" -> "/blog", "index.md" -> "/"
@@ -25,14 +29,7 @@ export function fileToRouteId(file: string) {
   return "/(content)/" + parts.join("/");
 }
 
-// Экранируем то, что роутер прочитает как свой синтаксис: точки, route.tsx, префикс "-" и суффикс "_"
-// "v1.2.md" -> "v1[.]2.tsx", "blog/route.md" -> "blog/[route].tsx"
+// "bar.mdx" -> "bar.tsx", "blog/index.mdx" -> "blog/index.tsx"
 export function fileToRouteFile(file: string) {
-  const parts = segments(file).map((segment) => {
-    if (UNESCAPABLE.test(segment))
-      throw new Error(`Content page "${file}" has characters the router can't use in a path`);
-    if (segment === "route") return "[route]";
-    return segment.replaceAll(".", "[.]").replace(/^-/, "[-]").replace(/_$/, "[_]");
-  });
-  return parts.join("/") + ".tsx";
+  return segments(file).join("/") + ".tsx";
 }
