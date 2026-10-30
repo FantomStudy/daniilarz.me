@@ -14,7 +14,7 @@ export interface ContentFile {
 }
 
 function readFrontmatter(file: string): Frontmatter {
-  const lines = readFileSync(file, "utf8").replace(BOM, "").split(/\r?\n/);
+  const lines = readFileSync(join(CONTENT_DIR, file), "utf8").replace(BOM, "").split(/\r?\n/);
   const end = lines.indexOf("---", 1);
   if (lines[0] !== "---" || end === -1)
     throw new Error(`Content page "${file}" has no frontmatter`);
@@ -25,29 +25,23 @@ function readFrontmatter(file: string): Frontmatter {
   return frontmatter;
 }
 
-export function readContentFile(file: string, root: string = CONTENT_DIR): ContentFile {
-  return { file, page: { path: fileToPagePath(file), ...readFrontmatter(join(root, file)) } };
-}
-
-export function collectContentFiles(root: string = CONTENT_DIR): ContentFile[] {
-  const files = readdirSync(root, { recursive: true, encoding: "utf8" })
+export function collectContent(): ContentFile[] {
+  const files = readdirSync(CONTENT_DIR, { recursive: true, encoding: "utf8" })
     .map((entry) => entry.replaceAll("\\", "/"))
     .filter(isContentFile);
 
-  const takenBy = new Map<string, string>();
+  const fileByPath = new Map<string, string>();
 
-  const contentFiles = files.map((file) => {
+  return files.map((file) => {
     const path = fileToPagePath(file);
-    const taken = takenBy.get(path);
+    const taken = fileByPath.get(path);
     if (taken) throw new Error(`Content collision: "${taken}" and "${file}" both map to "${path}"`);
+    fileByPath.set(path, file);
 
-    takenBy.set(path, file);
-    return readContentFile(file, root);
+    return { file, page: { path, ...readFrontmatter(file) } };
   });
-
-  return contentFiles.sort((a, b) => a.page.path.localeCompare(b.page.path));
 }
 
-export function collectPages(root: string = CONTENT_DIR): PageEntry[] {
-  return collectContentFiles(root).map(({ page }) => page);
+export function collectPages(): PageEntry[] {
+  return collectContent().map(({ page }) => page);
 }
