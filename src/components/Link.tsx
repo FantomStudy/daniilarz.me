@@ -1,13 +1,13 @@
-import type { PagePath } from "@/lib/content/content.gen";
+import type { FileRoutesByTo } from "@/routeTree.gen";
 import { Link as RouterLink } from "@tanstack/react-router";
 
 interface LinkProps extends React.ComponentProps<"a"> {
-  href: PagePath | (string & {});
+  href: keyof FileRoutesByTo | (string & {});
 }
 
 export function Link({ href, ...props }: LinkProps) {
   if (href.startsWith("/")) {
-    return <RouterLink to="/$" params={{ _splat: href.slice(1) }} {...props} />;
+    return <RouterLink to={href} {...props} />;
   }
 
   if (/^https?:\/\//.test(href)) {

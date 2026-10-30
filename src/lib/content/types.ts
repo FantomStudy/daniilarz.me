@@ -4,15 +4,9 @@ export interface Frontmatter {
   date?: string;
   duration?: string;
   wrapperClass?: string;
-  layout?: PageLayout;
+  layout?: "prose" | "wide";
 }
-
-export type PageLayout = "prose" | "wide";
 
 export interface PageEntry extends Frontmatter {
   path: string;
-}
-
-export interface LoadedPage extends PageEntry {
-  css: string[];
 }

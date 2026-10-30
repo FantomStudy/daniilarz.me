@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 import { render } from "takumi-js";
 import { Renderer } from "takumi-js/node";
 import { OG_HEIGHT, OG_WIDTH, ogImagePath } from "../../src/lib/og.ts";
-import { collectPages } from "../content.ts";
+import { collectPages } from "../content/collect.ts";
 import { BACKGROUND, Card } from "./Card.tsx";
 
 const FONTS = [

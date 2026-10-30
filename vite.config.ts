@@ -11,7 +11,8 @@ import icons from "unplugin-icons/vite";
 import { defineConfig } from "vite";
 import { imagetools } from "vite-imagetools";
 import { SITE_ORIGIN } from "./src/lib/og.ts";
-import { collectPages, content } from "./vite/content.ts";
+import { collectPages } from "./vite/content/collect.ts";
+import { content } from "./vite/content/index.ts";
 import { og } from "./vite/og/index.tsx";
 
 // https://vite.dev/config/
@@ -59,6 +60,7 @@ export default defineConfig({
       prerender: {
         enabled: true,
         crawlLinks: false,
+        autoStaticPathsDiscovery: false,
       },
     }),
     nitro(),
