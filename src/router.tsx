@@ -1,4 +1,4 @@
-import type { PageEntry } from "./lib/content/types";
+import type { PageMeta } from "./lib/meta";
 import { createRouter } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { NotFound } from "./components/NotFound";
@@ -25,6 +25,6 @@ declare module "@tanstack/react-router" {
   }
 
   interface StaticDataRouteOption {
-    page?: PageEntry;
+    page?: PageMeta;
   }
 }

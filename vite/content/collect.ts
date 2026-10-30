@@ -1,4 +1,4 @@
-import type { Frontmatter, PageEntry } from "../../src/lib/content/types.ts";
+import type { Frontmatter, PageMeta } from "../../src/lib/meta.ts";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parse } from "yaml";
@@ -7,11 +7,6 @@ import { fileToPagePath, isContentFile } from "./path.ts";
 export const CONTENT_DIR = "src/content";
 
 const BOM = /^﻿/;
-
-export interface ContentFile {
-  file: string;
-  page: PageEntry;
-}
 
 function readFrontmatter(file: string): Frontmatter {
   const lines = readFileSync(join(CONTENT_DIR, file), "utf8").replace(BOM, "").split(/\r?\n/);
@@ -23,6 +18,11 @@ function readFrontmatter(file: string): Frontmatter {
   if (!frontmatter.title) throw new Error(`Content page "${file}" has no title`);
 
   return frontmatter;
+}
+
+export interface ContentFile {
+  file: string;
+  page: PageMeta;
 }
 
 export function collectContent(): ContentFile[] {
@@ -42,6 +42,6 @@ export function collectContent(): ContentFile[] {
   });
 }
 
-export function collectPages(): PageEntry[] {
+export function collectPages(): PageMeta[] {
   return collectContent().map(({ page }) => page);
 }

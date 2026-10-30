@@ -1,11 +1,10 @@
 import type { Plugin } from "vite";
-import type { PageEntry } from "../../src/lib/content/types.ts";
+import type { PageMeta } from "../../src/lib/meta.ts";
 import type { CardProps } from "./Card.tsx";
 import { readFileSync } from "node:fs";
 import { render } from "takumi-js";
 import { Renderer } from "takumi-js/node";
-import { OG_HEIGHT, OG_WIDTH, ogImagePath } from "../../src/lib/og.ts";
-import { collectPages } from "../content/collect.ts";
+import { OG_HEIGHT, OG_WIDTH, ogImagePath } from "../../src/lib/meta.ts";
 import { BACKGROUND, Card } from "./Card.tsx";
 
 const FONTS = [
@@ -16,7 +15,7 @@ const FONTS = [
   { file: "src/assets/fonts/dm-mono-400.woff2", name: "DM Mono" },
 ];
 
-function toCardProps(page: PageEntry, titleByPath: Map<string, string>): CardProps {
+function toCardProps(page: PageMeta, titleByPath: Map<string, string>): CardProps {
   const section = titleByPath.get(page.path.slice(0, page.path.lastIndexOf("/")));
 
   return section
@@ -32,7 +31,7 @@ async function createRenderer() {
   return renderer;
 }
 
-export function og(): Plugin {
+export function og(pages: PageMeta[]): Plugin {
   return {
     name: "og",
     apply: "build",
@@ -41,7 +40,6 @@ export function og(): Plugin {
       const renderer = await createRenderer();
       const images = [{ src: BACKGROUND, data: readFileSync(BACKGROUND) }];
 
-      const pages = collectPages();
       const titleByPath = new Map(pages.map((page) => [page.path, page.title]));
 
       await Promise.all(
