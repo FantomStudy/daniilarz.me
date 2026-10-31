@@ -11,8 +11,8 @@ const getSizes = (photo: Photo) => `min(100vw, ${Math.ceil((photo.width / photo.
 export const preloadPhoto = (photo: Photo) => {
   preload(photo.src, {
     as: "image",
-    type: "image/avif",
-    imageSrcSet: photo.sources.avif,
+    type: "image/webp",
+    imageSrcSet: photo.sources.webp,
     imageSizes: getSizes(photo),
   });
 };
