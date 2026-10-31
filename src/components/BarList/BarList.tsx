@@ -4,7 +4,7 @@ import styles from "./BarList.module.css";
 const pictures = import.meta.glob<Picture>("/src/assets/bar/*.{jpg,jpeg,png,webp}", {
   eager: true,
   import: "default",
-  query: { w: "112;224", format: "webp", quality: "75", as: "picture" },
+  query: { w: "112;224;960", format: "webp", quality: "75", as: "picture" },
 });
 
 const SIZES = "(max-width: 500px) calc(100vw - 56px), 112px";
