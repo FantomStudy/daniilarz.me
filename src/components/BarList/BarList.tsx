@@ -56,8 +56,9 @@ const DRINKS: Drink[] = [
 export const BarList = () => {
   return (
     <div className={styles.list}>
-      {DRINKS.map((drink) => {
+      {DRINKS.map((drink, index) => {
         const photo = pictures[drink.photo];
+        const isFirst = index === 0;
         return (
           <article key={drink.name} className={styles.drink}>
             <div className={styles.photo}>
@@ -66,7 +67,8 @@ export const BarList = () => {
                 srcSet={photo.sources.webp}
                 sizes={SIZES}
                 alt={drink.name}
-                loading="lazy"
+                loading={isFirst ? "eager" : "lazy"}
+                fetchPriority={isFirst ? "high" : "auto"}
                 decoding="async"
                 width={photo.img.w}
                 height={photo.img.h}
