@@ -2,6 +2,7 @@ import type { Frontmatter } from "@/lib/meta";
 import { useMatches } from "@tanstack/react-router";
 import { useSyncExternalStore } from "react";
 import { DotsArt } from "./arts/DotsArt";
+import { OrcaArt } from "./arts/OrcaArt";
 import { PlumArt } from "./arts/PlumArt";
 import styles from "./Background.module.css";
 
@@ -17,9 +18,19 @@ const subscribeMotion = (notify: () => void) => {
 
 const getReducedMotion = () => window.matchMedia(MOTION_QUERY).matches;
 
-const ARTS: Record<Art, React.ReactNode> = {
+const ARTS = {
   dots: <DotsArt />,
   plum: <PlumArt />,
+  orca: <OrcaArt />,
+};
+
+const choices = Object.values(ARTS);
+const randomArt =
+  typeof window === "undefined" ? undefined : choices[Math.floor(Math.random() * choices.length)];
+
+const BACKGROUNDS: Record<Art, React.ReactNode> = {
+  ...ARTS,
+  random: randomArt,
   none: undefined,
 };
 
@@ -33,7 +44,7 @@ export const Background = () => {
 
   return (
     <div className={styles.background} aria-hidden="true">
-      {!reducedMotion && ARTS[requested]}
+      {!reducedMotion && BACKGROUNDS[requested]}
     </div>
   );
 };

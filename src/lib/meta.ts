@@ -9,7 +9,7 @@ export function ogImagePath(pagePath: string) {
 
 export interface Frontmatter {
   title: string;
-  art?: "dots" | "plum" | "none";
+  art?: "dots" | "plum" | "orca" | "random" | "none";
   description?: string;
   date?: string;
   duration?: string;
