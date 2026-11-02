@@ -98,8 +98,8 @@ export const createPlum = (canvas: HTMLCanvasElement) => {
     context = canvas.getContext("2d");
     if (!context) return;
 
-    width = window.innerWidth;
-    height = window.innerHeight;
+    width = canvas.clientWidth;
+    height = canvas.clientHeight;
     resolution = Math.min(window.devicePixelRatio || 1, MAX_RESOLUTION);
     canvas.width = Math.round(width * resolution);
     canvas.height = Math.round(height * resolution);
@@ -136,8 +136,8 @@ export const createPlum = (canvas: HTMLCanvasElement) => {
         resizeTimer = setTimeout(() => {
           const nextResolution = Math.min(window.devicePixelRatio || 1, MAX_RESOLUTION);
           if (
-            width !== window.innerWidth ||
-            height !== window.innerHeight ||
+            width !== canvas.clientWidth ||
+            height !== canvas.clientHeight ||
             resolution !== nextResolution
           ) {
             restart();

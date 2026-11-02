@@ -1,3 +1,4 @@
 .plum {
+  min-height: 100lvh;
   mask-image: radial-gradient(circle at center, transparent, #000);
 }
