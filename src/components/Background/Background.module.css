@@ -3,12 +3,6 @@
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  opacity: 1;
-  transition: opacity var(--background-fade) ease;
-}
-
-.background[data-leaving="true"] {
-  opacity: 0;
 }
 
 .background > * {
