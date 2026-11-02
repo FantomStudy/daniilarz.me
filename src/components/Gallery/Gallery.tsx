@@ -26,34 +26,38 @@ export const Gallery = () => {
   return (
     <div className={styles.root}>
       <ul className={styles.grid}>
-        {PHOTOS.map((photo, index) => (
-          <li key={photo.src} className={styles.item}>
-            <button
-              type="button"
-              aria-label={`Открыть ${photo.alt}`}
-              className={styles.open}
-              onClick={() => open(index)}
-              onPointerEnter={() => preloadPhoto(photo)}
-              onFocus={() => preloadPhoto(photo)}
-            >
-              <picture className={styles.picture}>
-                {Object.entries(photo.sources).map(([format, srcSet]) => (
-                  <source key={format} type={`image/${format}`} srcSet={srcSet} sizes={SIZES} />
-                ))}
-                <img
-                  className={styles.image}
-                  style={{ backgroundImage: `url(${photo.placeholder})` }}
-                  src={photo.src}
-                  width={photo.width}
-                  height={photo.height}
-                  alt={photo.alt}
-                  decoding="async"
-                  loading="lazy"
-                />
-              </picture>
-            </button>
-          </li>
-        ))}
+        {PHOTOS.map((photo, index) => {
+          const isPriority = [0, 1].includes(index);
+          return (
+            <li key={photo.src} className={styles.item}>
+              <button
+                type="button"
+                aria-label={`Открыть ${photo.alt}`}
+                className={styles.open}
+                onClick={() => open(index)}
+                onPointerEnter={() => preloadPhoto(photo)}
+                onFocus={() => preloadPhoto(photo)}
+              >
+                <picture className={styles.picture}>
+                  {Object.entries(photo.sources).map(([format, srcSet]) => (
+                    <source key={format} type={`image/${format}`} srcSet={srcSet} sizes={SIZES} />
+                  ))}
+                  <img
+                    className={styles.image}
+                    style={{ backgroundImage: `url(${photo.placeholder})` }}
+                    src={photo.src}
+                    width={photo.width}
+                    height={photo.height}
+                    alt={photo.alt}
+                    decoding="async"
+                    loading={isPriority ? "eager" : "lazy"}
+                    fetchPriority={isPriority ? "high" : "auto"}
+                  />
+                </picture>
+              </button>
+            </li>
+          );
+        })}
       </ul>
 
       <Lightbox ref={dialog} index={active} onNavigate={navigate} onClose={close} />
