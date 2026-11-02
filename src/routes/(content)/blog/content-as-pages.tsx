@@ -9,6 +9,7 @@ import { pageHead } from "@/lib/meta";
 const page: PageMeta = {
   path: "/blog/content-as-pages",
   title: "Контент как страницы сайта",
+  art: "plum",
   date: "2026-08-31",
   duration: "4 мин",
 };

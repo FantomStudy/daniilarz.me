@@ -3,7 +3,7 @@ import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-r
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import interCyrillic from "@/assets/fonts/inter-cyrillic.woff2?url";
 import interLatin from "@/assets/fonts/inter-latin.woff2?url";
-import { DotsArt } from "@/components/DotsArt";
+import { Background } from "@/components/Background";
 import { Header } from "@/components/Header";
 import { Link } from "@/components/Link";
 import { ThemeProvider } from "@/lib/theme";
@@ -98,7 +98,7 @@ function RootComponent() {
           <main className="main">
             <Outlet />
           </main>
-          <DotsArt />
+          <Background />
           <SpeedInsights />
         </MDXProvider>
       </ThemeProvider>

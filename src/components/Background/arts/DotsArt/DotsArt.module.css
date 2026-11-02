@@ -1,0 +1,12 @@
+.dots {
+  opacity: 0;
+  transition: opacity 600ms ease-out;
+}
+
+.dots[data-ready="true"] {
+  opacity: 1;
+}
+
+:global(:root.dark) .dots {
+  filter: invert(100%);
+}

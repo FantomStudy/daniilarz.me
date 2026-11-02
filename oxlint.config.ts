@@ -14,9 +14,11 @@ export default defineConfig({
     "react/only-export-components": ["off", { allowConstantExport: true }],
     "react/react-in-jsx-scope": "off",
     "react/exhaustive-deps": "off",
+    "react/set-state-in-effect": "off",
     "import/no-cycle": "error",
     "import/no-duplicates": "error",
     "import/no-unassigned-import": "off",
     "no-underscore-dangle": "warn",
+    "typescript/consistent-return": "off",
   },
 });

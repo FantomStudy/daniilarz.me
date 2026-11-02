@@ -9,6 +9,7 @@ import { pageHead } from "@/lib/meta";
 const page: PageMeta = {
   path: "/blog",
   title: "Блог",
+  art: "plum",
 };
 
 export const Route = createFileRoute("/(content)/blog/")({
