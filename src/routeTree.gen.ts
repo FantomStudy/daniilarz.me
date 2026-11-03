@@ -17,6 +17,7 @@ import { Route as contentPhotosRouteImport } from './routes/(content)/photos'
 import { Route as contentUseRouteImport } from './routes/(content)/use'
 import { Route as contentBlogIndexRouteImport } from './routes/(content)/blog/index'
 import { Route as contentBlogContentAsPagesRouteImport } from './routes/(content)/blog/content-as-pages'
+import { Route as contentBlogIJustWantedToWriteInMarkdownRouteImport } from './routes/(content)/blog/i-just-wanted-to-write-in-markdown'
 
 const contentRouteRoute = contentRouteRouteImport.update({
   id: '/(content)',
@@ -58,6 +59,12 @@ const contentBlogContentAsPagesRoute =
     path: '/blog/content-as-pages',
     getParentRoute: () => contentRouteRoute,
   } as any)
+const contentBlogIJustWantedToWriteInMarkdownRoute =
+  contentBlogIJustWantedToWriteInMarkdownRouteImport.update({
+    id: '/blog/i-just-wanted-to-write-in-markdown',
+    path: '/blog/i-just-wanted-to-write-in-markdown',
+    getParentRoute: () => contentRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/bar': typeof contentBarRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/use': typeof contentUseRoute
   '/': typeof contentIndexRoute
   '/blog/content-as-pages': typeof contentBlogContentAsPagesRoute
+  '/blog/i-just-wanted-to-write-in-markdown': typeof contentBlogIJustWantedToWriteInMarkdownRoute
   '/blog/': typeof contentBlogIndexRoute
 }
 export interface FileRoutesByTo {
@@ -75,6 +83,7 @@ export interface FileRoutesByTo {
   '/use': typeof contentUseRoute
   '/': typeof contentIndexRoute
   '/blog/content-as-pages': typeof contentBlogContentAsPagesRoute
+  '/blog/i-just-wanted-to-write-in-markdown': typeof contentBlogIJustWantedToWriteInMarkdownRoute
   '/blog': typeof contentBlogIndexRoute
 }
 export interface FileRoutesById {
@@ -86,6 +95,7 @@ export interface FileRoutesById {
   '/(content)/use': typeof contentUseRoute
   '/(content)/': typeof contentIndexRoute
   '/(content)/blog/content-as-pages': typeof contentBlogContentAsPagesRoute
+  '/(content)/blog/i-just-wanted-to-write-in-markdown': typeof contentBlogIJustWantedToWriteInMarkdownRoute
   '/(content)/blog/': typeof contentBlogIndexRoute
 }
 export interface FileRouteTypes {
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/use'
     | '/'
     | '/blog/content-as-pages'
+    | '/blog/i-just-wanted-to-write-in-markdown'
     | '/blog/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/use'
     | '/'
     | '/blog/content-as-pages'
+    | '/blog/i-just-wanted-to-write-in-markdown'
     | '/blog'
   id:
     | '__root__'
@@ -116,6 +128,7 @@ export interface FileRouteTypes {
     | '/(content)/use'
     | '/(content)/'
     | '/(content)/blog/content-as-pages'
+    | '/(content)/blog/i-just-wanted-to-write-in-markdown'
     | '/(content)/blog/'
   fileRoutesById: FileRoutesById
 }
@@ -181,6 +194,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof contentBlogContentAsPagesRouteImport
       parentRoute: typeof contentRouteRoute
     }
+    '/(content)/blog/i-just-wanted-to-write-in-markdown': {
+      id: '/(content)/blog/i-just-wanted-to-write-in-markdown'
+      path: '/blog/i-just-wanted-to-write-in-markdown'
+      fullPath: '/blog/i-just-wanted-to-write-in-markdown'
+      preLoaderRoute: typeof contentBlogIJustWantedToWriteInMarkdownRouteImport
+      parentRoute: typeof contentRouteRoute
+    }
   }
 }
 
@@ -191,6 +211,7 @@ interface contentRouteRouteChildren {
   contentUseRoute: typeof contentUseRoute
   contentIndexRoute: typeof contentIndexRoute
   contentBlogContentAsPagesRoute: typeof contentBlogContentAsPagesRoute
+  contentBlogIJustWantedToWriteInMarkdownRoute: typeof contentBlogIJustWantedToWriteInMarkdownRoute
   contentBlogIndexRoute: typeof contentBlogIndexRoute
 }
 
@@ -201,6 +222,8 @@ const contentRouteRouteChildren: contentRouteRouteChildren = {
   contentUseRoute: contentUseRoute,
   contentIndexRoute: contentIndexRoute,
   contentBlogContentAsPagesRoute: contentBlogContentAsPagesRoute,
+  contentBlogIJustWantedToWriteInMarkdownRoute:
+    contentBlogIJustWantedToWriteInMarkdownRoute,
   contentBlogIndexRoute: contentBlogIndexRoute,
 }
 

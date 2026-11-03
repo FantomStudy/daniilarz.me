@@ -6,6 +6,12 @@ interface Drink {
 
 export const DRINKS: Drink[] = [
   {
+    name: "Monster Ultra Rosá",
+    description:
+      "Абстрактная сладость, не могу выделить что-то конкретное. Сложно описать его хоть как-то. В нем есть что-то знакомое, навевающее воспоминания..",
+    photo: "/src/assets/bar/20261103_231256.jpg",
+  },
+  {
     name: "Monster Juice Bad Apple",
     description: "Сочный, сладкий и яблочный. Это же буквально газированный сок на вкус",
     photo: "/src/assets/bar/20261103_204135.jpg",
