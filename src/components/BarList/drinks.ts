@@ -6,6 +6,11 @@ interface Drink {
 
 export const DRINKS: Drink[] = [
   {
+    name: "Monster Juice Bad Apple",
+    description: "Сочный, сладкий и яблочный. Это же буквально газированный сок на вкус",
+    photo: "/src/assets/bar/20261103_204135.jpg",
+  },
+  {
     name: "Monster Ultra Violet",
     description:
       "Конфетный виноград. Поначалу виноград очень явный, но постепенно уходит на второй план. В какой-то момент напомнил холодный фруктовый чай",
@@ -23,7 +28,7 @@ export const DRINKS: Drink[] = [
     photo: "/src/assets/bar/20261012_191652.jpg",
   },
   {
-    name: "Monster Juiced Aussie Lemonade",
+    name: "Monster Juice Aussie Lemonade",
     description:
       "Непривычный для меня, яркий лимонный вкус. Не ожидал от него чего-то удивительного, но есть в нем что-то цепляющее",
     photo: "/src/assets/bar/20260923_210000.jpg",
