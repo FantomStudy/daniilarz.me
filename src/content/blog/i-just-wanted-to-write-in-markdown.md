@@ -50,4 +50,6 @@ export const Route = createFileRoute("/(content)/")({
 });
 ```
 
+Если интересно, как плагин создаёт файлы маршрутов и удаляет устаревшие, тут можно посмотреть [код генератора](https://github.com/FantomStudy/daniilarz.me/blob/50256e8ab030840f5f38145cba57fae260113430/vite/content/routes.ts).
+
 Чтобы добавить страницу, мне по-прежнему достаточно создать Markdown-файл. Только теперь я не переизобретаю колесо.
