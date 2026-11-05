@@ -4,7 +4,7 @@ Daniil Arz's portfolio is a TanStack Start (React 19, SSR) app built around file
 
 ## What can't be compromised
 
-- **Blazing-fast is measured, not assumed.** The site should feel fast everywhere, not just on a powerful desktop. Ship what measurements actually show — Lighthouse on mobile with throttling, across several runs — even when they contradict bundle-size intuition. DotsArt's statically imported `pixi.js` is the clearest example: the "obviously worse" larger bundle measured better TBT and a more stable Lighthouse score than the smaller, lazy-loaded version.
+- **Blazing-fast is measured, not assumed.** The site should feel fast everywhere, not just on a powerful desktop. Ship what measurements actually show — Lighthouse on mobile with throttling, across several runs — even when they contradict bundle-size intuition. DotsArt's statically imported `pixi.js` is the clearest example: the "obviously worse" larger bundle measured better TBT and a more stable Lighthouse score than the smaller, lazy-loaded version. The whole background, though, is lazy-loaded per page in [Background.tsx](src/components/Background/Background.tsx) — measured as a clear win on non-dots pages (TBT 51 → 0 ms, JS 826 → 356 KB), at the cost of dots fading in ~300 ms later (Speed Index) on dots pages. Numbers are in [dots.ts](src/components/Background/arts/DotsArt/dots.ts).
 
 - **One source of truth per fact.** File↔URL mapping is defined by one function ([path.ts](vite/content/path.ts)) and applied once, at build time, when the content plugin writes each page's route; the router, `og/`, and the prerender list all read its result. A page's frontmatter lives in its generated route's `staticData`, which is how [PostList](src/components/PostList/PostList.tsx) lists pages. Keep it that way: no parallel page lists or second copies of the mapping that can drift apart.
 
@@ -18,7 +18,7 @@ Daniil Arz's portfolio is a TanStack Start (React 19, SSR) app built around file
 
 Each of these has happened before and was diagnosed and reverted.
 
-- **Lazy-loading DotsArt's `pixi.js` import.** It looks like a bundle-size win, but measured worse TBT and a less stable Lighthouse score. Don't split it again on chunk-size grounds without measuring the actual impact.
+- **Lazy-loading `pixi.js` inside DotsArt.** A dynamic `import("pixi.js")` splits pixi into ~14 chunks with a waterfall and measured worse TBT and a less stable Lighthouse score. Lazy-load the whole art component from `Background` instead, with `pixi.js` imported statically inside it; don't split it further without measuring.
 
 - **Rendering `PageWrapper` from the generated page routes.** With seven importers, Rolldown moves it into a shared chunk whose CSS ships as a second render-blocking stylesheet, ordered before `index.css` — measured +150–300 ms FCP on every page. It belongs in the one hand-written layout, [(content)/route.tsx](<src/routes/(content)/route.tsx>); generated routes set `component` to the MDX content alone.
 
@@ -37,7 +37,7 @@ There is no test suite or runner in this repo — `bun run build` (which runs `t
 - Components are arrow-function expressions (`export const Foo = (...) => {...}`), not `function Foo()` declarations. The exception is route files in `src/routes/`: `export const Route = ...` goes first, and the components it references are hoisted `function` declarations below it, so the route's metadata reads top-down.
 - Props are typed via a named `interface FooProps` declared above the component, not inline in the destructure.
 - `clsx` for conditional/combined `className`s, not manual template-string concatenation.
-- Comments are rare (see the root-level default: only when the _why_ is non-obvious) — and when one is warranted, it's written in Russian, matching the existing convention in e.g. [DotsArt.tsx](src/components/DotsArt/DotsArt.tsx). Identifiers, docs, and this file stay English; match whichever language a given file's existing comments already use rather than defaulting to English.
+- Comments are rare (see the root-level default: only when the _why_ is non-obvious) — and when one is warranted, it's written in Russian, matching the existing convention in e.g. [dots.ts](src/components/Background/arts/DotsArt/dots.ts). Identifiers, docs, and this file stay English; match whichever language a given file's existing comments already use rather than defaulting to English.
 
 ## Where code lives
 

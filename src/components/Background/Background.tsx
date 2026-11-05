@@ -1,9 +1,6 @@
 import type { Frontmatter } from "@/lib/meta";
 import { useMatches } from "@tanstack/react-router";
-import { useSyncExternalStore } from "react";
-import { DotsArt } from "./arts/DotsArt";
-import { OrcaArt } from "./arts/OrcaArt";
-import { PlumArt } from "./arts/PlumArt";
+import { lazy, Suspense, useSyncExternalStore } from "react";
 import styles from "./Background.module.css";
 
 type Art = NonNullable<Frontmatter["art"]>;
@@ -17,6 +14,10 @@ const subscribeMotion = (notify: () => void) => {
 };
 
 const getReducedMotion = () => window.matchMedia(MOTION_QUERY).matches;
+
+const DotsArt = lazy(() => import("./arts/DotsArt").then((m) => ({ default: m.DotsArt })));
+const PlumArt = lazy(() => import("./arts/PlumArt").then((m) => ({ default: m.PlumArt })));
+const OrcaArt = lazy(() => import("./arts/OrcaArt").then((m) => ({ default: m.OrcaArt })));
 
 const ARTS = {
   dots: <DotsArt />,
@@ -44,7 +45,7 @@ export const Background = () => {
 
   return (
     <div className={styles.background} aria-hidden="true">
-      {!reducedMotion && BACKGROUNDS[requested]}
+      <Suspense>{!reducedMotion && BACKGROUNDS[requested]}</Suspense>
     </div>
   );
 };
