@@ -1,3 +1,12 @@
+.orca {
+  opacity: 0;
+  transition: opacity 600ms ease-out;
+}
+
+.orca[data-ready="true"] {
+  opacity: 1;
+}
+
 :global(html.dark) .orca {
   filter: invert(100%);
 }
