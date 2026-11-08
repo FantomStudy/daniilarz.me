@@ -6,9 +6,15 @@ interface Drink {
 
 export const DRINKS: Drink[] = [
   {
+    name: "Monster Ultra Paradise",
+    description:
+      "Кисло-сладкий киви, очень яркий и летний. Напоминает о дне, когда мне исполнилсоь 18 лет",
+    photo: "/src/assets/bar/20261108_220545.jpg",
+  },
+  {
     name: "Monster Ultra Fiesta Mango",
     description:
-      "Очередное манго.. Обычный и ничем не примечательный. По мне он старается быть похожим на Mango Loco, но не дотягивает.",
+      "Очередное манго.. Обычный и ничем не примечательный. По мне он старается быть похожим на Mango Loco, но не дотягивает",
     photo: "/src/assets/bar/20261107_185519.jpg",
   },
   {
