@@ -67,11 +67,11 @@ const contentBlogIJustWantedToWriteInMarkdownRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof contentIndexRoute
   '/bar': typeof contentBarRoute
   '/explore': typeof contentExploreRoute
   '/photos': typeof contentPhotosRoute
   '/use': typeof contentUseRoute
-  '/': typeof contentIndexRoute
   '/blog/content-as-pages': typeof contentBlogContentAsPagesRoute
   '/blog/i-just-wanted-to-write-in-markdown': typeof contentBlogIJustWantedToWriteInMarkdownRoute
   '/blog/': typeof contentBlogIndexRoute
@@ -101,11 +101,11 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/bar'
     | '/explore'
     | '/photos'
     | '/use'
-    | '/'
     | '/blog/content-as-pages'
     | '/blog/i-just-wanted-to-write-in-markdown'
     | '/blog/'
@@ -141,7 +141,7 @@ declare module '@tanstack/react-router' {
     '/(content)': {
       id: '/(content)'
       path: ''
-      fullPath: ''
+      fullPath: '/'
       preLoaderRoute: typeof contentRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
