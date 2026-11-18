@@ -6,7 +6,18 @@ interface Drink {
 
 export const DRINKS: Drink[] = [
   {
-    name: "Red Bull Sea Blue Edition",
+    name: "Monster Ultra Watermelon",
+    description:
+      "Не фанат арбузных газировок. Он относится к виду напитков, которые на вкус и запах, как жвачка. Такие напитки не в моем вкусе",
+    photo: "/src/assets/bar/20261118_210306.jpg",
+  },
+  {
+    name: "Red Bull The Peach Edition",
+    description: "Сладкий белый персик. Вкусный, но ничего особенного в нем не нахожу",
+    photo: "/src/assets/bar/20261117_191633.jpg",
+  },
+  {
+    name: "Red Bull The Sea Blue Edition",
     description:
       "Терпкий и ягодный. Не пробовал иргу вживую, но это по праву один из лучших вкусов ягод, что я пил когда-либо. Не слишком сладкий, без приторности. На вкус как свобода",
     photo: "/src/assets/bar/20261110_193614.jpg",
