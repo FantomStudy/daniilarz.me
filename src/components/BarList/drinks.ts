@@ -6,6 +6,12 @@ interface Drink {
 
 export const DRINKS: Drink[] = [
   {
+    name: "Monster Ultra Golden Pineapple",
+    description:
+      "Приглушенный вкус ананасового сока с легкой кислинкой, но в основном ощущается сладость. Неплохо, но брал бы по настроению",
+    photo: "/src/assets/bar/20261124_230752.jpg",
+  },
+  {
     name: "Monster Ultra Vice Guava",
     description:
       "Просто сладкий.. не особо запоминается и скорее абстрактный. Не интересно, просто добавлю в коллекцию",
