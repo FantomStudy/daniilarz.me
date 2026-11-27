@@ -6,6 +6,17 @@ interface Drink {
 
 export const DRINKS: Drink[] = [
   {
+    name: "Monster Juice Mango Loco",
+    description:
+      "Один из моих самых любимых уже очень давно. Все началось именно с него. Красивая упаковка, яркий вкус, только хорошие воспоминания",
+    photo: "/src/assets/bar/20261127_035134.jpg",
+  },
+  {
+    name: "Monster Rehab Peach Tea",
+    description: "Чай с персиком. Приятный, хоть и не выделяется чем-то особенным",
+    photo: "/src/assets/bar/20261125_210159.jpg",
+  },
+  {
     name: "Monster Ultra Golden Pineapple",
     description:
       "Приглушенный вкус ананасового сока с легкой кислинкой, но в основном ощущается сладость. Неплохо, но брал бы по настроению",
